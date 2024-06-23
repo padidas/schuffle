@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/MainHeading.vue'
+import { RouterView } from 'vue-router'
+import MainHeading from './components/MainHeading.vue'
 import { useColorMode } from '@vueuse/core'
+import { Icon } from '@iconify/vue';
+import { Button } from '@/components/ui/button'
 const mode = useColorMode()
+
+function toggleMode() {
+  if (mode.value === "light") mode.value = "dark"
+  else mode.value = "light"
+}
 
 </script>
 
 <template>
-  <header>
-    <HelloWorld msg="You did it!" />
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-    </nav>
-  </header>
+  <div class="flex bg-red-300">
+    <MainHeading />
+    <Button @click="toggleMode" variant="outline">
+      <Icon icon="radix-icons:moon"
+        class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Icon icon="radix-icons:sun"
+        class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span class="sr-only">Toggle theme</span>
+    </Button>
+  </div>
 
   <RouterView />
+  <Icon icon="radix-icons:moon"
+    class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+  <Icon icon="radix-icons:sun"
+    class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+
 </template>
