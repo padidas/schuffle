@@ -27,6 +27,12 @@ function handleAddBtnClick() {
     return
   }
   emit('addStudent', student.name, student.level)
+  resetInput()
+}
+
+function resetInput() {
+  student.name = ''
+  student.level = undefined
 }
 </script>
 
@@ -45,7 +51,7 @@ function handleAddBtnClick() {
           min="1"
           max="5"
           v-model.number="student.level"
-          :class="{ '!ring-1 !ring-red-600': levelError }"
+          :class="{ '!ring-1 !ring-red-600': levelError && student.level !== undefined }"
         />
       </div>
     </div>
