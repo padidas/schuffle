@@ -1,11 +1,20 @@
 import { describe, it, expect } from 'vitest'
-
-import { mount } from '@vue/test-utils'
-import HelloWorld from '../MainHeading.vue'
+import { isValidNumberString } from '@/lib/validateLevelInput'
 
 describe('HelloWorld', () => {
-  it('renders properly', () => {
-    const wrapper = mount(HelloWorld, { props: { msg: 'Hello Vitest' } })
-    expect(wrapper.text()).toContain('Hello Vitest')
+  it('validates level correctly', () => {
+    expect(isValidNumberString('1')).toBeTruthy()
+    expect(isValidNumberString('2')).toBeTruthy()
+    expect(isValidNumberString('3')).toBeTruthy()
+    expect(isValidNumberString('4')).toBeTruthy()
+    expect(isValidNumberString('5')).toBeTruthy()
+    expect(isValidNumberString('x')).toBeFalsy()
+    expect(isValidNumberString('2x')).toBeFalsy()
+    expect(isValidNumberString('x2')).toBeFalsy()
+    expect(isValidNumberString('aa')).toBeFalsy()
+    expect(isValidNumberString('22')).toBeFalsy()
+    expect(isValidNumberString('-1')).toBeFalsy()
+    expect(isValidNumberString('0')).toBeFalsy()
+    expect(isValidNumberString('-5')).toBeFalsy()
   })
 })
