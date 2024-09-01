@@ -50,8 +50,8 @@ function resetInput() {
   <form @submit="onSubmit" class="flex flex-col gap-4">
     <div class="flex gap-4">
       <FormField v-slot="{ componentField }" name="name">
-        <FormItem class="flex-[3]">
-          <FormLabel>Username</FormLabel>
+        <FormItem class="flex flex-col flex-[3]">
+          <FormLabel>Name</FormLabel>
           <FormControl>
             <Input type="text" placeholder="Hodor" v-bind="componentField" />
           </FormControl>
@@ -59,9 +59,9 @@ function resetInput() {
         </FormItem>
       </FormField>
       <FormField v-slot="{ componentField, value }" name="level">
-        <FormItem class="flex-1">
+        <FormItem class="flex flex-col flex-1">
           <FormLabel>Level: {{ value?.[0] }}</FormLabel>
-          <FormControl>
+          <FormControl class="flex flex-grow">
             <Slider :default-value="DEFAULT_LEVEL" :max="5" :min="1" v-bind="componentField" />
           </FormControl>
           <FormMessage />
