@@ -1,25 +1,38 @@
 <script setup lang="ts">
-import StudentInput from '@/components/StudentInput.vue'
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useFetch } from '@vueuse/core'
+import { z } from 'zod'
 
-export type Student = {
-  id: string
-  name: string
-  level: number
-}
+const { isFetching, error, data } = useFetch('http://localhost:3000/api/courses')
 
-const students = ref<Array<Student>>([])
+const courses = computed(() => verifyData(data.value))
 
-function addStudent(name: string, level: number) {
-  students.value.push({ id: self.crypto.randomUUID(), name, level })
+const CourseSchema = z.array(
+  z.object({
+    id: z.string(),
+    name: z.string()
+  })
+)
+
+const DataSchema = z.string()
+
+function verifyData(data: unknown): z.infer<typeof CourseSchema> | undefined {
+  const dataStr = DataSchema.safeParse(data)
+  if (dataStr.error) return
+
+  return CourseSchema.safeParse(JSON.parse(dataStr.data)).data
 }
 </script>
 
 <template>
-  <main>
-    <StudentInput @add-student="addStudent" />
-    <div v-for="student in students" v-bind:key="student.id">
-      {{ student.name }} {{ student.level }}
-    </div>
+  <main class="flex flex-col gap-4">
+    <RouterLink
+      v-for="course in courses"
+      :to="`/courses/${course.id}?name=${course.name}`"
+      v-bind:key="course.id"
+      >{{ course.name }}</RouterLink
+    >
+    <span v-if="error !== null">Error! {{ error }}</span>
+    <span v-else-if="isFetching">Loading...</span>
   </main>
 </template>
