@@ -29,7 +29,6 @@ const { isFetching, error, data } = useFetch(URL + `?course=${courseId}`).json()
 const {
   execute: executePost,
   isFetching: isFetchingPost,
-  error: errorPost,
   data: dataPost
 } = useFetch(URL, postOptions).post(newStudent).json()
 
