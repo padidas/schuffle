@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import StudentInput from '@/components/StudentInput.vue'
 import { Button } from '@/components/ui/button'
+import { useFetch } from '@vueuse/core'
 import { EditIcon } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 export type Student = {
   id: string
@@ -10,9 +12,15 @@ export type Student = {
   level: number
 }
 
-defineProps<{ courseName: string; courseId: string }>()
+const HOST = 'http://localhost:3000'
+const PATH = '/api/students/'
+const URL = HOST + PATH
 
-const students = ref<Array<Student>>([])
+const route = useRoute()
+
+const { isFetching, error, data } = useFetch(URL + route.params.id).json()
+
+const students = computed(() => data.value)
 const editMode = ref(false)
 
 function addStudent(name: string, level: number) {

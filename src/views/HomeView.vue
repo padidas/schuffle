@@ -24,7 +24,7 @@ const {
 } = useFetch(URL, putOptions).put(newCourse).json()
 
 const CourseSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   name: z.string()
 })
 const CourseArraySchema = z.array(CourseSchema)
@@ -45,9 +45,15 @@ function toggleEditMode() {
 }
 
 async function addCourse(name: string) {
-  newCourse.value = { name, id: Date.now().toString() }
+  newCourse.value = { name, id: getRandomInt() }
 
   await fetchPut(true)
+}
+
+function getRandomInt() {
+  const minCeiled = Math.ceil(100000)
+  const maxFloored = Math.floor(999999)
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled) // The maximum is exclusive and the minimum is inclusive
 }
 </script>
 
