@@ -10,7 +10,7 @@ const HOST = 'http://localhost:3000'
 const PATH = '/api/courses'
 const URL = HOST + PATH
 
-const putOptions = {
+const postOptions = {
   immediate: false
 }
 const newCourse = ref<z.infer<typeof CourseSchema>>()
@@ -18,10 +18,10 @@ const newCourse = ref<z.infer<typeof CourseSchema>>()
 const { isFetching, error, data } = useFetch(URL).json()
 
 const {
-  execute: fetchPut,
-  isFetching: isFetchingPut,
-  data: dataPut
-} = useFetch(URL, putOptions).put(newCourse).json()
+  execute: fetchPost,
+  isFetching: isFetchingPost,
+  data: dataPost
+} = useFetch(URL, postOptions).post(newCourse).json()
 
 const CourseSchema = z.object({
   id: z.number(),
@@ -30,7 +30,7 @@ const CourseSchema = z.object({
 const CourseArraySchema = z.array(CourseSchema)
 
 const courses = computed(() => {
-  if (dataPut.value) return verifyData(dataPut.value)
+  if (dataPost.value) return verifyData(dataPost.value)
   else return verifyData(data.value)
 })
 
@@ -47,7 +47,7 @@ function toggleEditMode() {
 async function addCourse(name: string) {
   newCourse.value = { name, id: getRandomInt() }
 
-  await fetchPut(true)
+  await fetchPost(true)
 }
 
 function getRandomInt() {
@@ -73,7 +73,7 @@ function getRandomInt() {
       >{{ course.name }}</RouterLink
     >
     <span v-if="error !== null">Error! {{ error }}</span>
-    <span v-else-if="isFetching || isFetchingPut">Loading...</span>
+    <span v-else-if="isFetching || isFetchingPost">Loading...</span>
   </main>
 </template>
 
