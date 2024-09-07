@@ -13,12 +13,12 @@ export type Student = {
 }
 
 const HOST = 'http://localhost:3000'
-const PATH = '/api/students/'
+const PATH = '/api/students'
 const URL = HOST + PATH
 
 const route = useRoute()
 
-const { isFetching, error, data } = useFetch(URL + route.params.id).json()
+const { isFetching, error, data } = useFetch(URL + `?course=${route.params.id}`).json()
 
 const students = computed(() => data.value)
 const editMode = ref(false)
