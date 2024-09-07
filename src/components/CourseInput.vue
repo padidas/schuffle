@@ -8,6 +8,9 @@ import { useForm } from 'vee-validate'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Check } from 'lucide-vue-next'
 
+defineProps<{
+  isLoading: boolean
+}>()
 const emit = defineEmits<{
   (e: 'addCourse', name: string): void
 }>()
@@ -37,8 +40,9 @@ function resetInput() {
   resetForm()
 }
 </script>
+
 <template>
-  <form @submit="onSubmit" class="flex flex-col gap-4">
+  <form @submit="onSubmit" class="flex flex-col gap-4 mb-4 border-b pb-4">
     <div class="flex gap-4">
       <FormField v-slot="{ componentField }" name="name">
         <FormItem class="flex flex-col flex-[3]">
@@ -50,6 +54,9 @@ function resetInput() {
         </FormItem>
       </FormField>
     </div>
-    <Button type="submit"> <Check /> </Button>
+    <Button type="submit">
+      <Loader v-if="isLoading" />
+      <Check v-else />
+    </Button>
   </form>
 </template>

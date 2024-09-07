@@ -58,26 +58,29 @@ function getRandomInt() {
 </script>
 
 <template>
-  <main class="flex flex-col gap-4">
+  <main>
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">Kurse</h2>
-      <Button variant="outline" size="sm" @click="toggleEditMode"><EditIcon /></Button>
+      <Button variant="ghost" size="sm" @click="toggleEditMode"><EditIcon /></Button>
     </div>
     <Transition>
-      <CourseInput v-if="editMode" @addCourse="addCourse" />
+      <CourseInput v-if="editMode" @addCourse="addCourse" :isLoading="isFetchingPost" />
     </Transition>
-    <RouterLink
-      v-for="course in courses"
-      :to="`/courses/${course.id}?name=${course.name}`"
-      v-bind:key="course.id"
-      >{{ course.name }}</RouterLink
-    >
+    <div class="flex flex-col gap-2">
+      <RouterLink
+        v-for="course in courses"
+        :to="`/courses/${course.id}?name=${course.name}`"
+        v-bind:key="course.id"
+        class="flex items-center justify-between space-x-4 rounded-md border p-3"
+        >{{ course.name }}</RouterLink
+      >
+    </div>
     <span v-if="error !== null">Error! {{ error }}</span>
     <span v-else-if="isFetching || isFetchingPost">Loading...</span>
   </main>
 </template>
 
-<style>
+<style global>
 .v-enter-active {
   transition: opacity 0.5s ease;
 }
