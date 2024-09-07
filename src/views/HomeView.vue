@@ -6,34 +6,38 @@ import { Button } from '@/components/ui/button'
 import { EditIcon } from 'lucide-vue-next'
 import CourseInput from '@/components/CourseInput.vue'
 
+const HOST = 'http://localhost:3000'
+const PATH = '/api/courses'
+const URL = HOST + PATH
+
+const putOptions = {
+  immediate: false
+}
+const newCourse = ref<z.infer<typeof CourseSchema>>()
+
+const { isFetching, error, data } = useFetch(URL).json()
+
 const {
-  execute: fetchGet,
-  isFetching: isFetchingGet,
-  error: errorGet,
-  data: data
-} = useFetch('http://localhost:3000/api/courses').json()
+  execute: fetchPut,
+  isFetching: isFetchingPut,
+  data: dataPut
+} = useFetch(URL, putOptions).put(newCourse).json()
 
-const { execute: fetchPut, isFetching: isFetchingPut } = useFetch(
-  'http://localhost:3000/api/courses',
-  {
-    immediate: false
-  }
-)
-  .put()
-  .json()
+const CourseSchema = z.object({
+  id: z.string(),
+  name: z.string()
+})
+const CourseArraySchema = z.array(CourseSchema)
 
-const CourseSchema = z.array(
-  z.object({
-    id: z.string(),
-    name: z.string()
-  })
-)
+const courses = computed(() => {
+  if (dataPut.value) return verifyData(dataPut.value)
+  else return verifyData(data.value)
+})
 
-const courses = computed(() => verifyData(data.value))
 const editMode = ref(false)
 
-function verifyData(data: unknown): z.infer<typeof CourseSchema> | undefined {
-  return CourseSchema.safeParse(data).data
+function verifyData(data: unknown): z.infer<typeof CourseArraySchema> | undefined {
+  return CourseArraySchema.safeParse(data).data
 }
 
 function toggleEditMode() {
@@ -41,9 +45,9 @@ function toggleEditMode() {
 }
 
 async function addCourse(name: string) {
-  alert(`bla ${name}`)
-  const { data } = useFetch('http://localhost:3000/api/courses').post().json()
-  alert(`res ${data}`)
+  newCourse.value = { name, id: Date.now().toString() }
+
+  await fetchPut(true)
 }
 </script>
 
@@ -62,8 +66,8 @@ async function addCourse(name: string) {
       v-bind:key="course.id"
       >{{ course.name }}</RouterLink
     >
-    <span v-if="errorGet !== null">Error! {{ errorGet }}</span>
-    <span v-else-if="isFetchingGet">Loading...</span>
+    <span v-if="error !== null">Error! {{ error }}</span>
+    <span v-else-if="isFetching || isFetchingPut">Loading...</span>
   </main>
 </template>
 
