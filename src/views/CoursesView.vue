@@ -70,7 +70,7 @@ function getRandomInt() {
     <div class="flex flex-col gap-2">
       <RouterLink
         v-for="course in courses"
-        :to="`/courses/${course.id}?name=${course.name}`"
+        :to="`/${course.id}?name=${course.name}`"
         v-bind:key="course.id"
         class="flex items-center justify-between space-x-4 rounded-md border p-3"
         >{{ course.name }}</RouterLink
