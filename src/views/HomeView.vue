@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { EditIcon } from 'lucide-vue-next'
 import CourseInput from '@/components/CourseInput.vue'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const HOST = 'http://localhost:3000'
 const PATH = '/api/courses'
@@ -74,9 +75,11 @@ function getRandomInt() {
         class="flex items-center justify-between space-x-4 rounded-md border p-3"
         >{{ course.name }}</RouterLink
       >
+      <Skeleton v-if="isFetching" class="w-full h-12" />
+      <Skeleton v-if="isFetching" class="w-full h-12" />
+      <Skeleton v-if="isFetching" class="w-full h-12" />
     </div>
     <span v-if="error !== null">Error! {{ error }}</span>
-    <span v-else-if="isFetching || isFetchingPost">Loading...</span>
   </main>
 </template>
 

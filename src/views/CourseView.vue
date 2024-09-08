@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import StudentInput from '@/components/StudentInput.vue'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useFetch } from '@vueuse/core'
-import { EditIcon } from 'lucide-vue-next'
+import { EditIcon, Trash } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { z } from 'zod'
@@ -88,14 +89,23 @@ function getRandomInt() {
         class="flex items-center justify-between space-x-4 rounded-md border p-3"
       >
         <span>{{ student.name }}</span>
-        <div
-          class="bg-primary text-primary-foreground font-semibold text-sm rounded-full w-6 h-6 text-center content-center"
-        >
-          {{ student.level }}
-        </div>
+        <Transition>
+          <div class="flex gap-2 items-center" v-if="editMode">
+            <Button variant="ghost" size="sm" class="p-2">
+              <div class="w-5 h-5 bg-primary rounded-full text-primary-foreground">
+                {{ student.level }}
+              </div>
+            </Button>
+            <Button variant="ghost" size="sm" class="p-2">
+              <Trash class="h-5" />
+            </Button>
+          </div>
+        </Transition>
       </div>
+      <Skeleton v-if="isFetching" class="w-full h-12" />
+      <Skeleton v-if="isFetching" class="w-full h-12" />
+      <Skeleton v-if="isFetching" class="w-full h-12" />
     </div>
     <span v-if="error !== null">Error! {{ error }}</span>
-    <span v-else-if="isFetching">Loading...</span>
   </main>
 </template>

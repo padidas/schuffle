@@ -17,7 +17,7 @@ const emit = defineEmits<{
   (e: 'addStudent', name: string, lvl: number): void
 }>()
 
-const DEFAULT_LEVEL = [3]
+const DEFAULT_LEVEL = [2]
 
 const formSchema = toTypedSchema(
   z.object({
@@ -66,7 +66,7 @@ function resetInput() {
         <FormItem class="flex flex-col flex-1">
           <FormLabel>Level: {{ value?.[0] }}</FormLabel>
           <FormControl class="flex flex-grow">
-            <Slider :default-value="DEFAULT_LEVEL" :max="5" :min="1" v-bind="componentField" />
+            <Slider :default-value="DEFAULT_LEVEL" :min="1" :max="3" v-bind="componentField" />
           </FormControl>
           <FormMessage />
         </FormItem>
