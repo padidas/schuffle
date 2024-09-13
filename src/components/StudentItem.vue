@@ -6,13 +6,7 @@ import { Check, Loader, Trash } from 'lucide-vue-next'
 import { useFetch } from '@vueuse/core'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
-import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput
-} from '@/components/ui/number-field'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 const props = defineProps<{
   student: z.infer<typeof StudentSchema>
@@ -53,14 +47,15 @@ async function handleDelete() {
 
 const levelSchema = z.number().min(1).max(3)
 
-async function changeLevel(level: number) {
-  const levelValidation = levelSchema.safeParse(level)
+async function changeLevel(level: string) {
+  const newLevel = Number(level)
+  const levelValidation = levelSchema.safeParse(newLevel)
   if (!levelValidation.success) {
     toast.error(getZodErrorMessage(levelValidation.error))
     return
   }
 
-  studentUpdate.value = { level }
+  studentUpdate.value = { level: newLevel }
   await executePut()
   if (errorPut.value) toast.error(JSON.stringify(errorPut.value))
   emit('fetchStudents')
@@ -83,20 +78,15 @@ function getZodErrorMessage(error: z.ZodError): string {
     <span>{{ student.name }}</span>
     <Transition>
       <div class="flex gap-2 items-center" v-if="editMode">
-        <NumberField
-          id="age"
-          :min="1"
-          :max="3"
-          :model-value="student.level"
-          @update:model-value="(v) => changeLevel(v)"
-          class="w-24"
+        <ToggleGroup
+          :model-value="student.level.toString()"
+          @update:model-value="changeLevel"
+          size="sm"
         >
-          <NumberFieldContent>
-            <NumberFieldDecrement />
-            <NumberFieldInput />
-            <NumberFieldIncrement />
-          </NumberFieldContent>
-        </NumberField>
+          <ToggleGroupItem value="1">1</ToggleGroupItem>
+          <ToggleGroupItem value="2">2</ToggleGroupItem>
+          <ToggleGroupItem value="3">3</ToggleGroupItem>
+        </ToggleGroup>
         <Button variant="ghost" size="sm" class="p-2" @click="handleDelete">
           <Loader v-if="isFetchingDelete" class="h-5" />
           <Check v-else-if="isFinished" class="h-5" />
