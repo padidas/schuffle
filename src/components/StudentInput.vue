@@ -7,7 +7,8 @@ import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Slider } from './ui/slider'
-import { Check, Loader } from 'lucide-vue-next'
+import { Loader, Plus } from 'lucide-vue-next'
+import { Label } from './ui/label'
 
 defineProps<{
   isLoading: boolean
@@ -48,33 +49,40 @@ const onSubmit = handleSubmit((values) => {
 function resetInput() {
   resetForm()
 }
+
+function getPlaceholder() {
+  const names = ['Hodor', 'Jon', 'Arya', 'Tyrion', 'Bran', 'Jaime']
+  const index = Math.floor(Math.random() * names.length)
+  return names[index]
+}
 </script>
 
 <template>
-  <form @submit="onSubmit" class="flex flex-col gap-4 mb-4 border-b pb-4">
-    <div class="flex gap-4">
-      <FormField v-slot="{ componentField }" name="name">
-        <FormItem class="flex flex-col flex-[3]">
-          <FormLabel>Name</FormLabel>
-          <FormControl>
-            <Input type="text" placeholder="Hodor" v-bind="componentField" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-      <FormField v-slot="{ componentField, value }" name="level">
-        <FormItem class="flex flex-col flex-1">
-          <FormLabel>Level: {{ value?.[0] }}</FormLabel>
-          <FormControl class="flex flex-grow">
-            <Slider :default-value="DEFAULT_LEVEL" :min="1" :max="3" v-bind="componentField" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+  <form @submit="onSubmit" class="flex gap-4 mb-4 border p-4 rounded-md">
+    <FormField v-slot="{ componentField }" name="name">
+      <FormItem class="flex flex-col flex-[2]">
+        <FormLabel>Name</FormLabel>
+        <FormControl>
+          <Input type="text" :placeholder="getPlaceholder()" v-bind="componentField" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <FormField v-slot="{ componentField, value }" name="level">
+      <FormItem class="flex flex-col flex-1">
+        <FormLabel>Level: {{ value?.[0] }}</FormLabel>
+        <FormControl class="flex flex-grow">
+          <Slider :default-value="DEFAULT_LEVEL" :min="1" :max="3" v-bind="componentField" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <div class="flex flex-col justify-between">
+      <Label></Label>
+      <Button type="submit" size="icon">
+        <Loader v-if="isLoading" />
+        <Plus v-else />
+      </Button>
     </div>
-    <Button type="submit">
-      <Loader v-if="isLoading" />
-      <Check v-else />
-    </Button>
   </form>
 </template>

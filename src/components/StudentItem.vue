@@ -85,10 +85,12 @@ const onSubmit = handleSubmit(async (values) => {
     return
   }
 
+  const oldName = props.student.name
+
   studentUpdate.value = { name: values.name }
   await executePut()
   if (errorPut.value) toast.error(JSON.stringify(errorPut.value))
-  else toast.success('Name wurde geändert.')
+  else toast.success(`Name wurde geändert: ${oldName} → ${values.name}`)
   emit('fetchStudents')
 })
 
@@ -123,7 +125,7 @@ function getZodErrorMessage(error: z.ZodError): string {
               <FormMessage />
             </FormItem>
           </FormField>
-          <Button type="submit" size="sm" class="p-2">
+          <Button type="submit" size="icon">
             <Loader v-if="isFetchingPut" />
             <Check v-else />
           </Button>
@@ -138,7 +140,7 @@ function getZodErrorMessage(error: z.ZodError): string {
             <ToggleGroupItem value="2">2</ToggleGroupItem>
             <ToggleGroupItem value="3">3</ToggleGroupItem>
           </ToggleGroup>
-          <Button variant="ghost" size="sm" class="p-2" @click="handleDelete">
+          <Button variant="ghost" size="icon" @click="handleDelete">
             <Loader v-if="isFetchingDelete" class="h-5" />
             <Check v-else-if="isFinished" class="h-5" />
             <Trash v-else class="h-5" />
