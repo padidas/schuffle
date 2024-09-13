@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import StudentInput from '@/components/StudentInput.vue'
+import StudentItem from '@/components/StudentItem.vue'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { StudentArraySchema, StudentSchema } from '@/types/schemas'
 import { useFetch } from '@vueuse/core'
-import { EditIcon, Trash } from 'lucide-vue-next'
+import { EditIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { z } from 'zod'
@@ -26,7 +28,7 @@ const courseId = route.params.id
 
 const newStudent = ref<z.infer<typeof StudentSchema>>()
 
-const { isFetching, error, data } = useFetch(URL + `?course=${courseId}`).json()
+const { execute, isFetching, error, data } = useFetch(URL + `?course=${courseId}`).json()
 const {
   execute: executePost,
   isFetching: isFetchingPost,
@@ -38,14 +40,7 @@ const students = computed(() => {
   else return verifyData(data.value)
 })
 const editMode = ref(false)
-
-const StudentSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  level: z.number().min(1).max(3),
-  courseId: z.number()
-})
-const StudentArraySchema = z.array(StudentSchema)
+const isInitiallyFetching = computed(() => isFetching && students.value === undefined)
 
 function verifyData(data: unknown): z.infer<typeof StudentArraySchema> | undefined {
   return StudentArraySchema.safeParse(data).data
@@ -83,28 +78,12 @@ function getRandomInt() {
     </Transition>
 
     <div class="flex flex-col gap-2">
-      <div
-        v-for="student in students"
-        v-bind:key="student.id"
-        class="flex items-center justify-between space-x-4 rounded-md border p-3"
-      >
-        <span>{{ student.name }}</span>
-        <Transition>
-          <div class="flex gap-2 items-center" v-if="editMode">
-            <Button variant="ghost" size="sm" class="p-2">
-              <div class="w-5 h-5 bg-primary rounded-full text-primary-foreground">
-                {{ student.level }}
-              </div>
-            </Button>
-            <Button variant="ghost" size="sm" class="p-2">
-              <Trash class="h-5" />
-            </Button>
-          </div>
-        </Transition>
-      </div>
-      <Skeleton v-if="isFetching" class="w-full h-12" />
-      <Skeleton v-if="isFetching" class="w-full h-12" />
-      <Skeleton v-if="isFetching" class="w-full h-12" />
+      <template v-for="student in students" v-bind:key="student.id">
+        <StudentItem :edit-mode="editMode" :student="student" @fetch-students="execute" />
+      </template>
+      <Skeleton v-if="isInitiallyFetching" class="w-full h-12" />
+      <Skeleton v-if="isInitiallyFetching" class="w-full h-12" />
+      <Skeleton v-if="isInitiallyFetching" class="w-full h-12" />
     </div>
     <span v-if="error !== null">Error! {{ error }}</span>
   </main>
