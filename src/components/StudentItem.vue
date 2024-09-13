@@ -7,6 +7,10 @@ import { useFetch } from '@vueuse/core'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 
 const props = defineProps<{
   student: z.infer<typeof StudentSchema>
@@ -27,7 +31,8 @@ const fetchOptions = {
 const {
   execute: executeDelete,
   isFetching: isFetchingDelete,
-  isFinished
+  isFinished,
+  error: errorDelete
 } = useFetch(URL + `?id=${props.student.id}`, fetchOptions).delete()
 
 const studentUpdate = ref<Partial<z.infer<typeof StudentSchema>>>()
@@ -42,12 +47,14 @@ const {
 
 async function handleDelete() {
   await executeDelete()
+  if (errorDelete.value) toast.error(`${props.student.name} konnte nicht gelöscht werden.`)
+  else toast.success(`${props.student.name} wurde gelöscht.`)
   emit('fetchStudents')
 }
 
 const levelSchema = z.number().min(1).max(3)
 
-async function changeLevel(level: string) {
+async function handleLevelChange(level: string) {
   const newLevel = Number(level)
   const levelValidation = levelSchema.safeParse(newLevel)
   if (!levelValidation.success) {
@@ -58,8 +65,32 @@ async function changeLevel(level: string) {
   studentUpdate.value = { level: newLevel }
   await executePut()
   if (errorPut.value) toast.error(JSON.stringify(errorPut.value))
+  else toast.success(`Level von ${props.student.name} wurde auf ${newLevel} geändert.`)
   emit('fetchStudents')
 }
+
+const formSchema = toTypedSchema(
+  z.object({
+    name: z.string().min(2).max(30)
+  })
+)
+
+const { errors, handleSubmit } = useForm({
+  validationSchema: formSchema
+})
+
+const onSubmit = handleSubmit(async (values) => {
+  if (errors.value.name) {
+    toast.error(errors.value.name)
+    return
+  }
+
+  studentUpdate.value = { name: values.name }
+  await executePut()
+  if (errorPut.value) toast.error(JSON.stringify(errorPut.value))
+  else toast.success('Name wurde geändert.')
+  emit('fetchStudents')
+})
 
 function getZodErrorMessage(error: z.ZodError): string {
   const message = error.message
@@ -75,24 +106,46 @@ function getZodErrorMessage(error: z.ZodError): string {
     class="flex items-center justify-between space-x-4 rounded-md border p-3"
     :class="{ 'bg-red-950': isFinished }"
   >
-    <span>{{ student.name }}</span>
-    <Transition>
-      <div class="flex gap-2 items-center" v-if="editMode">
-        <ToggleGroup
-          :model-value="student.level.toString()"
-          @update:model-value="changeLevel"
-          size="sm"
-        >
-          <ToggleGroupItem value="1">1</ToggleGroupItem>
-          <ToggleGroupItem value="2">2</ToggleGroupItem>
-          <ToggleGroupItem value="3">3</ToggleGroupItem>
-        </ToggleGroup>
-        <Button variant="ghost" size="sm" class="p-2" @click="handleDelete">
-          <Loader v-if="isFetchingDelete" class="h-5" />
-          <Check v-else-if="isFinished" class="h-5" />
-          <Trash v-else class="h-5" />
-        </Button>
+    <Transition mode="out-in">
+      <div v-if="editMode" class="flex justify-between w-full">
+        <form @submit="onSubmit" class="flex gap-4 items-center">
+          <FormField v-slot="{ componentField }" name="name">
+            <FormItem class="flex flex-col">
+              <FormControl>
+                <Input
+                  type="text"
+                  class="w-40"
+                  size="sm"
+                  v-bind="componentField"
+                  :model-value="student.name"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <Button type="submit" size="sm" class="p-2">
+            <Loader v-if="isFetchingPut" />
+            <Check v-else />
+          </Button>
+        </form>
+        <div class="flex gap-2 items-center">
+          <ToggleGroup
+            :model-value="student.level.toString()"
+            @update:model-value="handleLevelChange"
+            size="sm"
+          >
+            <ToggleGroupItem value="1">1</ToggleGroupItem>
+            <ToggleGroupItem value="2">2</ToggleGroupItem>
+            <ToggleGroupItem value="3">3</ToggleGroupItem>
+          </ToggleGroup>
+          <Button variant="ghost" size="sm" class="p-2" @click="handleDelete">
+            <Loader v-if="isFetchingDelete" class="h-5" />
+            <Check v-else-if="isFinished" class="h-5" />
+            <Trash v-else class="h-5" />
+          </Button>
+        </div>
       </div>
+      <span v-else>{{ student.name }}</span>
     </Transition>
   </div>
 </template>
