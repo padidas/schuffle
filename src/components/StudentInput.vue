@@ -52,6 +52,12 @@ const onSubmit = handleSubmit((values) => {
 function resetInput() {
   resetForm()
 }
+
+function getPlaceholder() {
+  const names = ['Hodor', 'Jon', 'Arya', 'Tyrion', 'Bran', 'Jaime']
+  const index = Math.floor(Math.random() * names.length)
+  return names[index]
+}
 </script>
 
 <template>
@@ -60,7 +66,7 @@ function resetInput() {
       <FormItem class="flex flex-col flex-[2]">
         <FormLabel>Name</FormLabel>
         <FormControl>
-          <Input type="text" placeholder="Hodor" v-bind="componentField" />
+          <Input type="text" :placeholder="getPlaceholder()" v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>
