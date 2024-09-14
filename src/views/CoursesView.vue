@@ -75,9 +75,9 @@ function getRandomInt() {
         class="flex items-center justify-between space-x-4 rounded-md border p-3"
         >{{ course.name }}</RouterLink
       >
-      <Skeleton v-if="isFetching" class="w-full h-12" />
-      <Skeleton v-if="isFetching" class="w-full h-12" />
-      <Skeleton v-if="isFetching" class="w-full h-12" />
+      <template v-if="isFetching">
+        <Skeleton v-for="n in 3" :key="n" class="w-full h-12" />
+      </template>
     </div>
     <span v-if="error !== null">Error! {{ error }}</span>
   </main>
