@@ -5,17 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { useFetchPostStudents } from '@/composables/useFetchPostStudent'
-import { StudentSchema } from '@/types/schemas'
 import { Dices, EditIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { z } from 'zod'
-
-export type Student = {
-  id: string
-  name: string
-  level: number
-}
 
 const route = useRoute()
 const courseId = route.params.id
@@ -41,14 +33,6 @@ async function addStudent(name: string, level: number) {
 function toggleEditMode() {
   editMode.value = !editMode.value
 }
-
-// function shuffle() {
-//   toast('schuffeling')
-
-//   const ones = students.value?.filter((stud) => stud.level === 1)
-//   const twos = students.value?.filter((stud) => stud.level === 2)
-//   const threes = students.value?.filter((stud) => stud.level === 3)
-// }
 
 function getRandomInt() {
   const minCeiled = Math.ceil(100000)

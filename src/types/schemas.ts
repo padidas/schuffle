@@ -8,3 +8,6 @@ export const StudentSchema = z.object({
 })
 
 export const StudentArraySchema = z.array(StudentSchema)
+
+export type Student = z.infer<typeof StudentSchema>
+export type StudentArray = z.infer<typeof StudentArraySchema>
