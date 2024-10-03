@@ -174,7 +174,9 @@ function shuffleStudentList(array: Student[]) {
       <div v-else class="flex gap-3 w-full flex-wrap mb-10">
         <div
           class="flex py-1.5 px-2.5 border rounded-md h-fit"
-          v-for="student in filteredStudents?.toSorted((a, b) => a.name.localeCompare(b.name))"
+          v-for="student in [...(filteredStudents ?? [])].sort((a, b) =>
+            a.name.localeCompare(b.name)
+          )"
           v-bind:key="student.id"
         >
           {{ student.name }}
