@@ -6,7 +6,8 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Check } from 'lucide-vue-next'
+import { Loader, Plus } from 'lucide-vue-next'
+import { Label } from './ui/label'
 
 defineProps<{
   isLoading: boolean
@@ -53,10 +54,13 @@ function resetInput() {
           <FormMessage />
         </FormItem>
       </FormField>
+      <div class="flex flex-col justify-between">
+        <Label></Label>
+        <Button type="submit">
+          <Loader v-if="isLoading" />
+          <Plus v-else />
+        </Button>
+      </div>
     </div>
-    <Button type="submit">
-      <Loader v-if="isLoading" />
-      <Check v-else />
-    </Button>
   </form>
 </template>

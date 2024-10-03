@@ -58,7 +58,7 @@ function getPlaceholder() {
 </script>
 
 <template>
-  <form @submit="onSubmit" class="flex gap-4 mb-4 border p-4 rounded-md">
+  <form @submit="onSubmit" class="flex gap-4 mb-4 border p-4 rounded-md w-full">
     <FormField v-slot="{ componentField }" name="name">
       <FormItem class="flex flex-col flex-[2]">
         <FormLabel>Name</FormLabel>

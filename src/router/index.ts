@@ -17,7 +17,7 @@ const router = createRouter({
       component: StudentsView
     },
     {
-      path: '/shuffle/:id',
+      path: '/:id/shuffle',
       name: 'shuffle',
       component: GroupsView
     }

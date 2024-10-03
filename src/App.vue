@@ -5,6 +5,7 @@ import { useColorMode } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
 import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
+import MainNav from './components/MainNav.vue'
 
 const mode = useColorMode()
 
@@ -15,7 +16,7 @@ function toggleMode() {
 </script>
 
 <template>
-  <div class="flex flex-col p-4">
+  <div class="container mx-auto flex flex-col py-4 h-screen">
     <div class="flex justify-between mb-4">
       <MainHeading />
       <Button @click="toggleMode" variant="ghost" size="sm">
@@ -30,7 +31,7 @@ function toggleMode() {
         <span class="sr-only">Toggle theme</span>
       </Button>
     </div>
-
+    <MainNav />
     <RouterView />
   </div>
   <Toaster />

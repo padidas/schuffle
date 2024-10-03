@@ -4,7 +4,7 @@ import { Slider } from '@/components/ui/slider'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { cn, getChar } from '@/lib/utils'
 import type { Student } from '@/types/schemas'
-import { Dices } from 'lucide-vue-next'
+import { ChevronRight, Dices } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -116,8 +116,7 @@ function shuffleStudentList(array: Student[]) {
 
 <template>
   <main>
-    <div class="flex justify-between items-center mb-3">
-      <h2 class="text-xl font-semibold">{{ courseName }}</h2>
+    <div class="flex justify-between items-center mb-3 h-12">
       <div class="flex gap-2">
         <Slider
           v-model="amountOfGroups"
@@ -130,6 +129,7 @@ function shuffleStudentList(array: Student[]) {
       </div>
       <Button size="sm" @click="shuffle"><Dices class="w-4 h-4 mr-2" /> Shuffle </Button>
     </div>
+
     <div class="flex gap-3 w-full flex-wrap my-8">
       <div
         class="flex p-3 border rounded-md w-full gap-3 flex-wrap"

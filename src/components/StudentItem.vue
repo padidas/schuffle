@@ -110,13 +110,13 @@ function getZodErrorMessage(error: z.ZodError): string {
   >
     <Transition mode="out-in">
       <div v-if="editMode" class="flex justify-between w-full">
-        <form @submit="onSubmit" class="flex gap-4 items-center">
+        <form @submit="onSubmit" class="flex gap-3 items-center">
           <FormField v-slot="{ componentField }" name="name">
             <FormItem class="flex flex-col">
               <FormControl>
                 <Input
                   type="text"
-                  class="w-40"
+                  class="w-32"
                   size="sm"
                   v-bind="componentField"
                   :model-value="student.name"
@@ -125,7 +125,7 @@ function getZodErrorMessage(error: z.ZodError): string {
               <FormMessage />
             </FormItem>
           </FormField>
-          <Button type="submit" size="icon">
+          <Button type="submit" size="icon" variant="secondary">
             <Loader v-if="isFetchingPut" />
             <Check v-else />
           </Button>

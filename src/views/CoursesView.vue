@@ -60,9 +60,10 @@ function getRandomInt() {
 
 <template>
   <main>
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold">Kurse</h2>
-      <Button variant="ghost" size="sm" @click="toggleEditMode"><EditIcon /></Button>
+    <div class="flex justify-end items-center mb-3 h-12">
+      <Button variant="ghost" size="sm" @click="toggleEditMode"
+        ><EditIcon class="w-4 h-4 mr-2" />Edit</Button
+      >
     </div>
     <Transition>
       <CourseInput v-if="editMode" @addCourse="addCourse" :isLoading="isFetchingPost" />
