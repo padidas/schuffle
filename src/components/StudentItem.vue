@@ -11,7 +11,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useHiddenStudentsStore } from '@/stores/counter'
+import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
 
 const props = defineProps<{
   student: z.infer<typeof StudentSchema>

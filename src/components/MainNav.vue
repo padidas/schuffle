@@ -39,5 +39,3 @@ const shuffle = computed(() => route.path.includes('shuffle'))
     </BreadcrumbList>
   </Breadcrumb>
 </template>
-
-:to="`/${courseId}/shuffle/?name=${courseName}`
