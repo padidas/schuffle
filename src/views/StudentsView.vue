@@ -14,7 +14,7 @@ const route = useRoute()
 const courseId = route.params.id
 const courseName = route.query['name']
 
-const { execute, isFetching, error, students } = useFetchGetStudents(courseId)
+const { execute, isFetching, students } = useFetchGetStudents(courseId)
 const { isFetching: isFetchingPost, executeWithPayload } = useFetchPostStudents()
 
 const editMode = ref(false)
@@ -66,7 +66,7 @@ function getRandomInt() {
     <div class="flex justify-end items-center gap-2 absolute bottom-2 right-2">
       <RouterLink :to="`/${courseId}/shuffle/?name=${courseName}`">
         <div class="bg-background rounded-md">
-          <Button size="sm"><Dices class="w-4 h-4 mr-2" /> Shuffle </Button>
+          <Button size="sm"><Dices class="w-4 h-4 mr-2" /> Create groups </Button>
         </div>
       </RouterLink>
       <div class="bg-background rounded-md">

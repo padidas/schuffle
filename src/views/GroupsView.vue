@@ -4,13 +4,12 @@ import { Slider } from '@/components/ui/slider'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { cn, getChar } from '@/lib/utils'
 import type { Student } from '@/types/schemas'
-import { ChevronRight, Dices } from 'lucide-vue-next'
+import { Dices } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const courseId = route.params.id
-const courseName = route.query['name']
 const { students } = useFetchGetStudents(courseId)
 
 const amountOfGroups = ref([3])
