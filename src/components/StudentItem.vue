@@ -2,7 +2,7 @@
 import type { StudentSchema } from '@/types/schemas'
 import { z } from 'zod'
 import { Button } from './ui/button'
-import { Check, Loader, Trash } from 'lucide-vue-next'
+import { Check, EyeIcon, EyeOffIcon, Loader, Trash } from 'lucide-vue-next'
 import { useFetch } from '@vueuse/core'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
@@ -11,6 +11,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useHiddenStudentsStore } from '@/stores/counter'
 
 const props = defineProps<{
   student: z.infer<typeof StudentSchema>
@@ -20,6 +21,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'fetchStudents'): void
 }>()
+
+const { hiddenStudents, hide, show } = useHiddenStudentsStore()
 
 const HOST = 'http://localhost:3000'
 const PATH = '/api/students'
@@ -146,7 +149,25 @@ function getZodErrorMessage(error: z.ZodError): string {
           </Button>
         </div>
       </div>
-      <span v-else>{{ student.name }}</span>
+      <div
+        v-else
+        class="flex w-full justify-between"
+        :class="{ 'text-muted': hiddenStudents.some((elem) => elem === student.id) }"
+      >
+        {{ student.name }}
+        <div class="-my-2">
+          <Button
+            v-if="hiddenStudents.some((elem) => elem === student.id)"
+            @click="show(student.id)"
+            variant="ghost"
+            size="icon"
+            ><EyeOffIcon class="w-5"
+          /></Button>
+          <Button v-else @click="hide(student.id)" variant="ghost" size="icon"
+            ><EyeIcon class="w-5"
+          /></Button>
+        </div>
+      </div>
     </Transition>
   </div>
 </template>

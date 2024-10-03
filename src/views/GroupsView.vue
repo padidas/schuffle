@@ -5,6 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Slider } from '@/components/ui/slider'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { cn, getChar } from '@/lib/utils'
+import { useHiddenStudentsStore } from '@/stores/counter'
 import type { Student } from '@/types/schemas'
 import { Dices } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
@@ -14,11 +15,15 @@ const route = useRoute()
 const courseId = route.params.id
 
 const { students } = useFetchGetStudents(courseId)
+const { hiddenStudents } = useHiddenStudentsStore()
+const filteredStudents = computed(() =>
+  students.value?.filter((student) => !hiddenStudents.includes(student.id))
+)
 
 const amountOfGroups = ref([3])
 
 const groups = ref<Map<number, Student[]>>(new Map())
-const amountOfStudents = computed(() => students.value?.length ?? 0)
+const amountOfStudents = computed(() => filteredStudents.value?.length ?? 0)
 const smallestGroups = computed(() => {
   const minLength = Math.min(...[...groups.value.values()].map((arr) => arr.length))
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,9 +70,9 @@ function shuffle() {
   }
 
   // create groups of student levels
-  let ones = students.value?.filter((stud) => stud.level === 1)
-  let twos = students.value?.filter((stud) => stud.level === 2)
-  let threes = students.value?.filter((stud) => stud.level === 3)
+  let ones = filteredStudents.value?.filter((stud) => stud.level === 1)
+  let twos = filteredStudents.value?.filter((stud) => stud.level === 2)
+  let threes = filteredStudents.value?.filter((stud) => stud.level === 3)
 
   if (ones === undefined || twos === undefined || threes === undefined) return
 
@@ -158,7 +163,7 @@ function shuffleStudentList(array: Student[]) {
           <div
             v-for="student in group[1]"
             v-bind:key="student.id"
-            class="flex py-1 px-2 border rounded-md"
+            class="flex py-1.5 px-2.5 border rounded-md"
           >
             {{ student.name }}
           </div>
@@ -167,8 +172,8 @@ function shuffleStudentList(array: Student[]) {
 
       <div v-else class="flex gap-3 w-full flex-wrap mb-10">
         <div
-          class="flex py-1 px-2 border rounded-md"
-          v-for="student in students?.toSorted((a, b) => a.name.localeCompare(b.name))"
+          class="flex py-1.5 px-2.5 border rounded-md"
+          v-for="student in filteredStudents?.toSorted((a, b) => a.name.localeCompare(b.name))"
           v-bind:key="student.id"
         >
           {{ student.name }}
