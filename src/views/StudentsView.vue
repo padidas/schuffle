@@ -6,7 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { useFetchPostStudents } from '@/composables/useFetchPostStudent'
-import { Dices, EditIcon } from 'lucide-vue-next'
+import { Dices, EditIcon, UserPlus, XIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -18,6 +18,7 @@ const { execute, isFetching, students } = useFetchGetStudents(courseId)
 const { isFetching: isFetchingPost, executeWithPayload } = useFetchPostStudents()
 
 const editMode = ref(false)
+const addMode = ref(false)
 const isInitiallyFetching = computed(() => isFetching && students.value === undefined)
 
 async function addStudent(name: string, level: number) {
@@ -35,6 +36,10 @@ function toggleEditMode() {
   editMode.value = !editMode.value
 }
 
+function toggleAddMode() {
+  addMode.value = !addMode.value
+}
+
 function getRandomInt() {
   const minCeiled = Math.ceil(100000)
   const maxFloored = Math.floor(999999)
@@ -45,13 +50,19 @@ function getRandomInt() {
 <template>
   <main class="flex flex-col overflow-hidden flex-1 relative items-center">
     <Transition>
-      <StudentInput v-if="editMode" @add-student="addStudent" :isLoading="isFetchingPost" />
+      <StudentInput v-if="addMode" @add-student="addStudent" :isLoading="isFetchingPost" />
     </Transition>
 
     <ScrollArea class="border w-full flex h-auto rounded-md p-3">
-      <h3 class="text-lg font-semibold mb-3">Students</h3>
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-lg font-semibold">Schülis</h3>
+        <Button size="sm" variant="ghost" @click="toggleEditMode">
+          <template v-if="editMode"> <XIcon class="w-4 h-4 mr-2" />Beenden </template>
+          <template v-else><EditIcon class="w-4 h-4 mr-2" />Bearbeiten </template>
+        </Button>
+      </div>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 mb-10">
         <template v-for="student in students" v-bind:key="student.id">
           <StudentItem :edit-mode="editMode" :student="student" @fetch-students="execute" />
         </template>
@@ -59,21 +70,22 @@ function getRandomInt() {
           <Skeleton v-for="n in 3" :key="n" class="w-full h-12" />
         </template>
       </div>
-
-      <h3 class="text-lg font-semibold mt-4 mb-3">Group History</h3>
     </ScrollArea>
 
-    <div class="flex justify-end items-center gap-2 absolute bottom-2 right-2">
+    <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
+      <div class="bg-background rounded-md">
+        <Button variant="secondary" @click="toggleAddMode"
+          ><template v-if="addMode"> <XIcon class="w-4 h-4 mr-2" /> Schließen </template>
+          <template v-else> <UserPlus class="w-4 h-4 mr-2" /> Hinzufügen </template>
+        </Button>
+      </div>
       <RouterLink :to="`/${courseId}/shuffle/?name=${courseName}`">
         <div class="bg-background rounded-md">
-          <Button size="sm"><Dices class="w-4 h-4 mr-2" /> Create groups </Button>
+          <Button :variant="editMode || addMode ? 'secondary' : 'default'"
+            ><Dices class="w-4 h-4 mr-2" /> Gruppen erstellen
+          </Button>
         </div>
       </RouterLink>
-      <div class="bg-background rounded-md">
-        <Button size="sm" variant="secondary" @click="toggleEditMode"
-          ><EditIcon class="w-4 h-4 mr-2" /> Edit</Button
-        >
-      </div>
     </div>
   </main>
 </template>

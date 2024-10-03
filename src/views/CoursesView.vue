@@ -3,9 +3,10 @@ import { computed, ref } from 'vue'
 import { useFetch } from '@vueuse/core'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import { EditIcon } from 'lucide-vue-next'
+import { BookPlus, EditIcon, X, XIcon } from 'lucide-vue-next'
 import CourseInput from '@/components/CourseInput.vue'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const HOST = 'http://localhost:3000'
 const PATH = '/api/courses'
@@ -59,28 +60,35 @@ function getRandomInt() {
 </script>
 
 <template>
-  <main>
-    <div class="flex justify-end items-center mb-3 h-12">
-      <Button variant="ghost" size="sm" @click="toggleEditMode"
-        ><EditIcon class="w-4 h-4 mr-2" />Edit</Button
-      >
-    </div>
+  <main class="flex flex-col overflow-hidden flex-1 relative items-center">
     <Transition>
       <CourseInput v-if="editMode" @addCourse="addCourse" :isLoading="isFetchingPost" />
     </Transition>
-    <div class="flex flex-col gap-2">
-      <RouterLink
-        v-for="course in courses"
-        :to="`/${course.id}?name=${course.name}`"
-        v-bind:key="course.id"
-        class="flex items-center justify-between space-x-4 rounded-md border p-3"
-        >{{ course.name }}</RouterLink
-      >
-      <template v-if="isFetching">
-        <Skeleton v-for="n in 3" :key="n" class="w-full h-12" />
-      </template>
+
+    <ScrollArea class="border w-full flex h-auto rounded-md p-3">
+      <div class="flex flex-col gap-2">
+        <RouterLink
+          v-for="course in courses"
+          :to="`/${course.id}?name=${course.name}`"
+          v-bind:key="course.id"
+          class="flex items-center justify-between space-x-4 rounded-md border p-3"
+          >{{ course.name }}</RouterLink
+        >
+        <template v-if="isFetching">
+          <Skeleton v-for="n in 3" :key="n" class="w-full h-12" />
+        </template>
+      </div>
+      <span v-if="error !== null">Error! {{ error }}</span>
+    </ScrollArea>
+
+    <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
+      <div class="bg-background rounded-md">
+        <Button @click="toggleEditMode" variant="secondary"
+          ><template v-if="editMode"><X class="w-4 h-4 mr-2" />Schließen</template
+          ><template v-else><BookPlus class="w-4 h-4 mr-2" />Kurs hinzufügen</template></Button
+        >
+      </div>
     </div>
-    <span v-if="error !== null">Error! {{ error }}</span>
   </main>
 </template>
 

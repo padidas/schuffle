@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Slider } from './ui/slider'
-import { Loader, Plus } from 'lucide-vue-next'
+import { Loader, UserPlus } from 'lucide-vue-next'
 import { Label } from './ui/label'
 
 defineProps<{
@@ -81,7 +81,7 @@ function getPlaceholder() {
       <Label></Label>
       <Button type="submit" size="icon">
         <Loader v-if="isLoading" />
-        <Plus v-else />
+        <UserPlus v-else />
       </Button>
     </div>
   </form>

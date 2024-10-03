@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Slider } from '@/components/ui/slider'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { cn, getChar } from '@/lib/utils'
@@ -10,6 +12,9 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const courseId = route.params.id
+
+const showLevel = ref(true)
+
 const { students } = useFetchGetStudents(courseId)
 
 const amountOfGroups = ref([3])
@@ -58,33 +63,33 @@ function shuffle() {
   }
 
   // create groups of student levels
-  let soyStudents = students.value?.filter((stud) => stud.level === 1)
-  let midStudents = students.value?.filter((stud) => stud.level === 2)
-  let chadStudents = students.value?.filter((stud) => stud.level === 3)
+  let ones = students.value?.filter((stud) => stud.level === 1)
+  let twos = students.value?.filter((stud) => stud.level === 2)
+  let threes = students.value?.filter((stud) => stud.level === 3)
 
-  if (soyStudents === undefined || midStudents === undefined || chadStudents === undefined) return
+  if (ones === undefined || twos === undefined || threes === undefined) return
 
   // shuffle groups of student levels
-  shuffleStudentList(soyStudents)
-  shuffleStudentList(midStudents)
-  shuffleStudentList(chadStudents)
+  shuffleStudentList(ones)
+  shuffleStudentList(twos)
+  shuffleStudentList(threes)
 
   // equally distribute chad students
-  chadStudents?.forEach((stud) => {
+  threes?.forEach((stud) => {
     const groupNumber = weakestSmallestGroups.value.keys().next().value as number
     const groupsStudents = groups.value.get(groupNumber) ?? []
     groups.value.set(groupNumber, [...groupsStudents, stud])
   })
 
   // distribute mid students to weakest smallest group
-  midStudents?.forEach((stud) => {
+  twos?.forEach((stud) => {
     const groupNumber = weakestSmallestGroups.value.keys().next().value as number
     const groupsStudents = groups.value.get(groupNumber) ?? []
     groups.value.set(groupNumber, [...groupsStudents, stud])
   })
 
   // distribute by smalles group, if group same size -> strongest group
-  soyStudents?.forEach((stud) => {
+  ones?.forEach((stud) => {
     const groupNumber = strongestSmallestGroups.value.keys().next().value as number
     const groupsStudents = groups.value.get(groupNumber) ?? []
     groups.value.set(groupNumber, [...groupsStudents, stud])
@@ -114,63 +119,74 @@ function shuffleStudentList(array: Student[]) {
 </script>
 
 <template>
-  <main>
-    <div class="flex justify-between items-center mb-3 h-12">
-      <div class="flex gap-2">
-        <Slider
-          v-model="amountOfGroups"
-          :min="2"
-          :max="15"
-          :step="1"
-          :class="cn('w-28', $attrs.class ?? '')"
-        />
-        {{ amountOfGroups[0] }}
+  <main class="flex flex-col overflow-hidden flex-1 relative items-center">
+    <div class="flex justify-between w-full px-2 items-center mb-3 h-12">
+      <div class="flex flex-col gap-2">
+        <Label>Wie viele Gruppen?</Label>
+        <div class="flex gap-2">
+          <Slider
+            v-model="amountOfGroups"
+            :min="2"
+            :max="15"
+            :step="1"
+            :class="cn('w-28', $attrs.class ?? '')"
+          />
+          {{ amountOfGroups[0] }}
+        </div>
       </div>
-      <Button size="sm" @click="shuffle"><Dices class="w-4 h-4 mr-2" /> Shuffle </Button>
+      <div class="px-1 py-2 text-sm">
+        <div>{{ amountOfStudents }} Personen</div>
+        <div>{{ (amountOfStudents / amountOfGroups[0]).toFixed(1) }} pro Gruppe</div>
+      </div>
     </div>
 
-    <div class="flex gap-3 w-full flex-wrap my-8">
-      <div
-        class="flex p-3 border rounded-md w-full gap-3 flex-wrap"
-        v-for="group in [...groups]"
-        v-bind:key="group[0]"
-      >
+    <ScrollArea class="border w-full flex flex-col h-auto rounded-md p-3">
+      <div class="flex gap-3 w-full flex-wrap mb-8">
         <div
-          class="flex bg-primary text-primary-foreground w-8 h-8 rounded-full justify-center items-center self-center"
+          class="flex p-3 border rounded-md w-full gap-3 flex-wrap"
+          v-for="group in [...groups]"
+          v-bind:key="group[0]"
         >
-          {{ getChar(group[0]) }}
+          <div
+            class="flex bg-primary text-primary-foreground w-8 h-8 rounded-full justify-center items-center self-center"
+          >
+            {{ getChar(group[0]) }}
+          </div>
+          <div
+            v-for="student in group[1]"
+            v-bind:key="student.id"
+            class="flex py-1 px-2 border rounded-md"
+            :class="{
+              'border-red-700': student.level === 3 && showLevel,
+              'border-orange-500': student.level === 2 && showLevel,
+              'border-yellow-300': student.level === 1 && showLevel
+            }"
+          >
+            {{ student.name }}
+          </div>
         </div>
+      </div>
+
+      <div class="flex gap-3 w-full flex-wrap mb-10">
         <div
-          v-for="student in group[1]"
-          v-bind:key="student.id"
           class="flex py-1 px-2 border rounded-md"
           :class="{
-            'border-red-700': student.level === 3,
-            'border-orange-500': student.level === 2,
-            'border-yellow-300': student.level === 1
+            'border-red-700': student.level === 3 && showLevel,
+            'border-orange-500': student.level === 2 && showLevel,
+            'border-yellow-300': student.level === 1 && showLevel
           }"
+          v-for="student in students?.toSorted((a, b) => a.name.localeCompare(b.name))"
+          v-bind:key="student.id"
         >
           {{ student.name }}
         </div>
       </div>
-    </div>
-    <div class="flex gap-3 w-full flex-wrap">
-      <div
-        class="flex py-1 px-2 border rounded-md"
-        :class="{
-          'border-red-700': student.level === 3,
-          'border-orange-500': student.level === 2,
-          'border-yellow-300': student.level === 1
-        }"
-        v-for="student in students?.toSorted((a, b) => a.name.localeCompare(b.name))"
-        v-bind:key="student.id"
-      >
-        {{ student.name }}
+    </ScrollArea>
+
+    <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
+      <div class="bg-background rounded-md">
+        <Button @click="shuffle"><Dices class="w-4 h-4 mr-2" /> Gruppen erstellen </Button>
       </div>
-    </div>
-    <div class="px-1 py-2">
-      <div>{{ amountOfStudents }} students</div>
-      <div>{{ (amountOfStudents / amountOfGroups[0]).toFixed(1) }} per group</div>
     </div>
   </main>
 </template>

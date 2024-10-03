@@ -6,7 +6,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Loader, Plus } from 'lucide-vue-next'
+import { BookPlus, Loader } from 'lucide-vue-next'
 import { Label } from './ui/label'
 
 defineProps<{
@@ -43,8 +43,8 @@ function resetInput() {
 </script>
 
 <template>
-  <form @submit="onSubmit" class="flex flex-col gap-4 mb-4 border-b pb-4">
-    <div class="flex gap-4">
+  <form @submit="onSubmit" class="flex flex-col gap-4 mb-4 border rounded-md p-4 w-full">
+    <div class="flex gap-3">
       <FormField v-slot="{ componentField }" name="name">
         <FormItem class="flex flex-col flex-[3]">
           <FormLabel>Kursbezeichnung</FormLabel>
@@ -56,9 +56,9 @@ function resetInput() {
       </FormField>
       <div class="flex flex-col justify-between">
         <Label></Label>
-        <Button type="submit">
+        <Button type="submit" size="icon">
           <Loader v-if="isLoading" />
-          <Plus v-else />
+          <BookPlus v-else />
         </Button>
       </div>
     </div>

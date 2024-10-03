@@ -130,11 +130,10 @@ function getZodErrorMessage(error: z.ZodError): string {
             <Check v-else />
           </Button>
         </form>
-        <div class="flex gap-2 items-center">
+        <div class="flex gap-3 items-center">
           <ToggleGroup
             :model-value="student.level.toString()"
             @update:model-value="handleLevelChange"
-            size="sm"
           >
             <ToggleGroupItem value="1">1</ToggleGroupItem>
             <ToggleGroupItem value="2">2</ToggleGroupItem>
@@ -143,7 +142,7 @@ function getZodErrorMessage(error: z.ZodError): string {
           <Button variant="ghost" size="icon" @click="handleDelete">
             <Loader v-if="isFetchingDelete" class="h-5" />
             <Check v-else-if="isFinished" class="h-5" />
-            <Trash v-else class="h-5" />
+            <Trash v-else class="h-5 text-destructive" />
           </Button>
         </div>
       </div>
