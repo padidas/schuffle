@@ -1,6 +1,6 @@
 # schuffle
 
-This template should help get you started developing with Vue 3 in Vite.
+With Schuffle, you can create courses, add students, and effortlessly form balanced groups for collaborative work.
 
 ## Recommended IDE Setup
 
