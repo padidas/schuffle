@@ -65,7 +65,7 @@ function getRandomInt() {
       <CourseInput v-if="editMode" @addCourse="addCourse" :isLoading="isFetchingPost" />
     </Transition>
 
-    <ScrollArea class="border w-full flex h-auto rounded-md p-3">
+    <ScrollArea class="w-full flex h-auto pr-3">
       <div class="flex flex-col gap-2">
         <RouterLink
           v-for="course in courses"

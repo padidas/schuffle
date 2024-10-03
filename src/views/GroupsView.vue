@@ -13,8 +13,6 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const courseId = route.params.id
 
-const showLevel = ref(true)
-
 const { students } = useFetchGetStudents(courseId)
 
 const amountOfGroups = ref([3])
@@ -52,6 +50,10 @@ const strongestSmallestGroups = computed(() => {
     )
   )
 })
+
+function reset() {
+  groups.value = new Map()
+}
 
 function shuffle() {
   // reset Map
@@ -120,7 +122,7 @@ function shuffleStudentList(array: Student[]) {
 
 <template>
   <main class="flex flex-col overflow-hidden flex-1 relative items-center">
-    <div class="flex justify-between w-full px-2 items-center mb-3 h-12">
+    <div class="flex justify-between w-full px-2 items-center mt-2 mb-6 h-12">
       <div class="flex flex-col gap-2">
         <Label>Wie viele Gruppen?</Label>
         <div class="flex gap-2">
@@ -140,8 +142,8 @@ function shuffleStudentList(array: Student[]) {
       </div>
     </div>
 
-    <ScrollArea class="border w-full flex flex-col h-auto rounded-md p-3">
-      <div class="flex gap-3 w-full flex-wrap mb-8">
+    <ScrollArea class="w-full flex flex-col h-auto rounded-md pr-3">
+      <div v-if="groups.size > 0" class="flex gap-4 w-full flex-wrap mb-8">
         <div
           class="flex p-3 border rounded-md w-full gap-3 flex-wrap"
           v-for="group in [...groups]"
@@ -149,32 +151,23 @@ function shuffleStudentList(array: Student[]) {
         >
           <div
             class="flex bg-primary text-primary-foreground w-8 h-8 rounded-full justify-center items-center self-center"
+            :class="getChar(group[0])[1]"
           >
-            {{ getChar(group[0]) }}
+            {{ getChar(group[0])[0] }}
           </div>
           <div
             v-for="student in group[1]"
             v-bind:key="student.id"
             class="flex py-1 px-2 border rounded-md"
-            :class="{
-              'border-red-700': student.level === 3 && showLevel,
-              'border-orange-500': student.level === 2 && showLevel,
-              'border-yellow-300': student.level === 1 && showLevel
-            }"
           >
             {{ student.name }}
           </div>
         </div>
       </div>
 
-      <div class="flex gap-3 w-full flex-wrap mb-10">
+      <div v-else class="flex gap-3 w-full flex-wrap mb-10">
         <div
           class="flex py-1 px-2 border rounded-md"
-          :class="{
-            'border-red-700': student.level === 3 && showLevel,
-            'border-orange-500': student.level === 2 && showLevel,
-            'border-yellow-300': student.level === 1 && showLevel
-          }"
           v-for="student in students?.toSorted((a, b) => a.name.localeCompare(b.name))"
           v-bind:key="student.id"
         >
@@ -185,7 +178,10 @@ function shuffleStudentList(array: Student[]) {
 
     <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
       <div class="bg-background rounded-md">
-        <Button @click="shuffle"><Dices class="w-4 h-4 mr-2" /> Gruppen erstellen </Button>
+        <Button v-if="groups.size > 0" variant="secondary" @click="reset"
+          ><Dices class="w-4 h-4 mr-2" /> Zurücksetzen
+        </Button>
+        <Button v-else @click="shuffle"><Dices class="w-4 h-4 mr-2" /> Gruppen erstellen </Button>
       </div>
     </div>
   </main>

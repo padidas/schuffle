@@ -125,7 +125,7 @@ function getZodErrorMessage(error: z.ZodError): string {
               <FormMessage />
             </FormItem>
           </FormField>
-          <Button type="submit" size="icon" variant="secondary">
+          <Button type="submit" size="icon">
             <Loader v-if="isFetchingPut" />
             <Check v-else />
           </Button>

@@ -33,10 +33,12 @@ async function addStudent(name: string, level: number) {
 }
 
 function toggleEditMode() {
+  addMode.value = false
   editMode.value = !editMode.value
 }
 
 function toggleAddMode() {
+  editMode.value = false
   addMode.value = !addMode.value
 }
 
@@ -53,7 +55,7 @@ function getRandomInt() {
       <StudentInput v-if="addMode" @add-student="addStudent" :isLoading="isFetchingPost" />
     </Transition>
 
-    <ScrollArea class="border w-full flex h-auto rounded-md p-3">
+    <ScrollArea class="w-full flex h-auto pr-3">
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-lg font-semibold">Schülis</h3>
         <Button size="sm" variant="ghost" @click="toggleEditMode">
@@ -62,7 +64,7 @@ function getRandomInt() {
         </Button>
       </div>
 
-      <div class="flex flex-col gap-2 mb-10">
+      <div class="flex flex-col gap-2 mb-14">
         <template v-for="student in students" v-bind:key="student.id">
           <StudentItem :edit-mode="editMode" :student="student" @fetch-students="execute" />
         </template>
