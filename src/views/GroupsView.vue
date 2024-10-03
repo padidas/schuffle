@@ -148,22 +148,23 @@ function shuffleStudentList(array: Student[]) {
     </div>
 
     <ScrollArea class="w-full flex flex-col h-auto rounded-md pr-3">
-      <div v-if="groups.size > 0" class="flex gap-4 w-full flex-wrap mb-8">
+      <div v-if="groups.size > 0" class="flex gap-6 w-full flex-wrap mb-8">
         <div
-          class="flex p-3 border rounded-md w-full gap-3 flex-wrap"
+          class="flex p-3 border rounded-md w-full gap-3 flex-wrap flex-1 min-w-72 max-w-full flex-grow"
+          :class="`${getChar(group[0])[2]}`"
           v-for="group in [...groups]"
           v-bind:key="group[0]"
         >
           <div
             class="flex bg-primary text-primary-foreground w-8 h-8 rounded-full justify-center items-center self-center"
-            :class="getChar(group[0])[1]"
+            :class="`${getChar(group[0])[1]}`"
           >
             {{ getChar(group[0])[0] }}
           </div>
           <div
             v-for="student in group[1]"
             v-bind:key="student.id"
-            class="flex py-1.5 px-2.5 border rounded-md"
+            class="flex py-1.5 px-2.5 border rounded-md h-fit"
           >
             {{ student.name }}
           </div>
@@ -172,7 +173,7 @@ function shuffleStudentList(array: Student[]) {
 
       <div v-else class="flex gap-3 w-full flex-wrap mb-10">
         <div
-          class="flex py-1.5 px-2.5 border rounded-md"
+          class="flex py-1.5 px-2.5 border rounded-md h-fit"
           v-for="student in filteredStudents?.toSorted((a, b) => a.name.localeCompare(b.name))"
           v-bind:key="student.id"
         >

@@ -16,7 +16,7 @@ function toggleMode() {
 </script>
 
 <template>
-  <div class="container mx-auto flex flex-col py-4 h-screen">
+  <div class="container mx-auto flex flex-col py-4 h-screen max-w-3xl">
     <div class="flex justify-between mb-4">
       <MainHeading />
       <Button @click="toggleMode" variant="ghost" size="sm">
