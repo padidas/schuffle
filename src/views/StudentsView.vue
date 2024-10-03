@@ -65,7 +65,10 @@ function getRandomInt() {
       </div>
 
       <div class="flex flex-col gap-2 mb-14">
-        <template v-for="student in students" v-bind:key="student.id">
+        <template
+          v-for="student in students?.toSorted((a, b) => a.name.localeCompare(b.name))"
+          v-bind:key="student.id"
+        >
           <StudentItem :edit-mode="editMode" :student="student" @fetch-students="execute" />
         </template>
         <template v-if="isInitiallyFetching">

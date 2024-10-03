@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { useFetch } from '@vueuse/core'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import { BookPlus, X } from 'lucide-vue-next'
+import { ArrowRightIcon, BookPlus, X } from 'lucide-vue-next'
 import CourseInput from '@/components/CourseInput.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -72,8 +72,10 @@ function getRandomInt() {
           :to="`/${course.id}?name=${course.name}`"
           v-bind:key="course.id"
           class="flex items-center justify-between space-x-4 rounded-md border p-3"
-          >{{ course.name }}</RouterLink
-        >
+          >{{ course.name }}
+          <div class="w-16 -my-1 h-8 flex items-center justify-center bg-primary rounded">
+            <ArrowRightIcon class="text-secondary" /></div
+        ></RouterLink>
         <template v-if="isFetching">
           <Skeleton v-for="n in 3" :key="n" class="w-full h-12" />
         </template>
