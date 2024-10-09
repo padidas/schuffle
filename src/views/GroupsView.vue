@@ -147,7 +147,7 @@ function shuffleStudentList(array: Student[]) {
       </div>
     </div>
 
-    <ScrollArea class="w-full flex flex-col h-auto rounded-md pr-3">
+    <ScrollArea class="w-full flex flex-col h-auto pr-3">
       <div v-if="groups.size > 0" class="flex gap-6 w-full flex-wrap mb-8">
         <div
           class="flex p-3 border rounded-md w-full gap-3 flex-wrap flex-1 min-w-72 max-w-full flex-grow"
