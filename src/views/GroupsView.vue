@@ -7,7 +7,7 @@ import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { cn, getChar } from '@/lib/utils'
 import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
 import type { Student } from '@/types/schemas'
-import { Dices } from 'lucide-vue-next'
+import { Dices, DropletIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -20,6 +20,7 @@ const filteredStudents = computed(() =>
   students.value?.filter((student) => !hiddenStudents.includes(student.id))
 )
 
+const showColors = ref(false)
 const amountOfGroups = ref([3])
 
 const groups = ref<Map<number, Student[]>>(new Map())
@@ -123,6 +124,10 @@ function shuffleStudentList(array: Student[]) {
     ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
   }
 }
+
+function toggleShowColors() {
+  showColors.value = !showColors.value
+}
 </script>
 
 <template>
@@ -165,6 +170,11 @@ function shuffleStudentList(array: Student[]) {
             v-for="student in group[1]"
             v-bind:key="student.id"
             class="flex py-1.5 px-2.5 border rounded-md h-fit"
+            :class="{
+              'border-red-700': student.level === 3 && showColors,
+              'border-orange-500': student.level === 2 && showColors,
+              'border-yellow-300': student.level === 1 && showColors
+            }"
           >
             {{ student.name }}
           </div>
@@ -174,6 +184,11 @@ function shuffleStudentList(array: Student[]) {
       <div v-else class="flex gap-3 w-full flex-wrap mb-10">
         <div
           class="flex py-1.5 px-2.5 border rounded-md h-fit"
+          :class="{
+            'border-red-700': student.level === 3 && showColors,
+            'border-orange-500': student.level === 2 && showColors,
+            'border-yellow-300': student.level === 1 && showColors
+          }"
           v-for="student in [...(filteredStudents ?? [])].sort((a, b) =>
             a.name.localeCompare(b.name)
           )"
@@ -185,6 +200,14 @@ function shuffleStudentList(array: Student[]) {
     </ScrollArea>
 
     <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
+      <div class="bg-background rounded-md">
+        <Button variant="secondary" @click="toggleShowColors">
+          <template v-if="showColors"
+            ><DropletIcon class="w-4 h-4 mr-2" /> Farben verstecken</template
+          >
+          <template v-else><DropletIcon class="w-4 h-4 mr-2" /> Farben zeigen</template>
+        </Button>
+      </div>
       <div class="bg-background rounded-md">
         <Button v-if="groups.size > 0" variant="secondary" @click="reset"
           ><Dices class="w-4 h-4 mr-2" /> Zurücksetzen
