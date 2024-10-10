@@ -6,8 +6,16 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { BookPlus, Loader } from 'lucide-vue-next'
+import { BookPlusIcon, LoaderIcon } from 'lucide-vue-next'
 import { Label } from './ui/label'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
 defineProps<{
   isLoading: boolean
@@ -33,34 +41,41 @@ const onSubmit = handleSubmit((values) => {
   }
   if (values.name) {
     emit('addCourse', values.name)
-    resetInput()
+    toast.success(`${values.name} wurde hinzugefügt.`)
+    resetForm()
   }
 })
-
-function resetInput() {
-  resetForm()
-}
 </script>
 
 <template>
-  <form @submit="onSubmit" class="flex flex-col gap-4 mb-4 border rounded-md p-4 w-full">
-    <div class="flex gap-3">
-      <FormField v-slot="{ componentField }" name="name">
-        <FormItem class="flex flex-col flex-[3]">
-          <FormLabel>Kursbezeichnung</FormLabel>
-          <FormControl>
-            <Input type="text" placeholder="Fach 9z" v-bind="componentField" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-      <div class="flex flex-col justify-between">
-        <Label></Label>
-        <Button type="submit" size="icon">
-          <Loader v-if="isLoading" />
-          <BookPlus v-else />
-        </Button>
-      </div>
-    </div>
-  </form>
+  <Dialog>
+    <DialogTrigger as-child>
+      <Button variant="outline"><BookPlusIcon class="w-4 h-4 mr-2" /> Kurs hinzufügen </Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Kurs hinzufügen</DialogTitle>
+      </DialogHeader>
+      <form @submit="onSubmit" class="flex flex-col">
+        <div class="flex my-4">
+          <FormField v-slot="{ componentField }" name="name">
+            <FormItem class="flex flex-col flex-[3]">
+              <FormLabel>Kursbezeichnung</FormLabel>
+              <FormControl>
+                <Input type="text" placeholder="Fach 9z" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <Label></Label>
+        </div>
+        <DialogFooter class="flex flex-row justify-end">
+          <Button type="submit">
+            <template v-if="isLoading"><LoaderIcon class="w-4 h-4 mr-2" /> Lädt</template>
+            <template v-else><BookPlusIcon class="w-4 h-4 mr-2" /> Hinzufügen</template>
+          </Button>
+        </DialogFooter>
+      </form>
+    </DialogContent>
+  </Dialog>
 </template>

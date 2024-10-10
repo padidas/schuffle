@@ -61,10 +61,6 @@ function getRandomInt() {
 
 <template>
   <main class="flex flex-col overflow-hidden flex-1 relative items-center">
-    <Transition>
-      <CourseInput v-if="editMode" @addCourse="addCourse" :isLoading="isFetchingPost" />
-    </Transition>
-
     <ScrollArea class="w-full flex h-auto pr-3">
       <div class="flex flex-col gap-2">
         <RouterLink
@@ -85,10 +81,7 @@ function getRandomInt() {
 
     <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
       <div class="bg-background rounded-md">
-        <Button @click="toggleEditMode" variant="secondary"
-          ><template v-if="editMode"><X class="w-4 h-4 mr-2" />Schließen</template
-          ><template v-else><BookPlus class="w-4 h-4 mr-2" />Kurs hinzufügen</template></Button
-        >
+        <CourseInput @addCourse="addCourse" :isLoading="isFetchingPost" />
       </div>
     </div>
   </main>
