@@ -4,12 +4,14 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Slider } from '@/components/ui/slider'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
-import { cn, getChar } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
 import type { Student } from '@/types/schemas'
 import { Dices, DropletIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import DroppableGroup from '@/components/DroppableGroup.vue'
+import { toast } from 'vue-sonner'
 
 const route = useRoute()
 const courseId = route.params.id
@@ -82,21 +84,21 @@ function shuffle() {
   shuffleStudentList(twos)
   shuffleStudentList(threes)
 
-  // equally distribute chad students
+  // equally distribute threes
   threes?.forEach((stud) => {
     const groupNumber = weakestSmallestGroups.value.keys().next().value as number
     const groupsStudents = groups.value.get(groupNumber) ?? []
     groups.value.set(groupNumber, [...groupsStudents, stud])
   })
 
-  // distribute mid students to weakest smallest group
+  // distribute twos to weakest smallest group
   twos?.forEach((stud) => {
     const groupNumber = weakestSmallestGroups.value.keys().next().value as number
     const groupsStudents = groups.value.get(groupNumber) ?? []
     groups.value.set(groupNumber, [...groupsStudents, stud])
   })
 
-  // distribute by smalles group, if group same size -> strongest group
+  // distribute ones by smalles group, if group same size -> strongest group
   ones?.forEach((stud) => {
     const groupNumber = strongestSmallestGroups.value.keys().next().value as number
     const groupsStudents = groups.value.get(groupNumber) ?? []
@@ -123,6 +125,36 @@ function shuffleStudentList(array: Student[]) {
     // And swap it with the current element.
     ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
   }
+}
+
+function moveStudent(fromGroup: number, toGroup: number, studentId: string) {
+  console.log(`move student ${studentId} from ${fromGroup} to ${toGroup}`)
+
+  if (fromGroup === toGroup) return
+
+  // find prev and new groups
+  const prevGroupStudents = groups.value.get(fromGroup)
+  const newGroupStudents = groups.value.get(toGroup)
+  const movingStudent = students.value?.find((student) => student.id.toString() === studentId)
+
+  // abort if not both groups and student are found
+  if (
+    prevGroupStudents === undefined ||
+    newGroupStudents === undefined ||
+    movingStudent === undefined
+  ) {
+    toast.error('DnD-Fehler')
+    return
+  }
+
+  // remove student from previous group
+  groups.value.set(
+    fromGroup,
+    [...prevGroupStudents].filter((student) => student.id.toString() !== studentId)
+  )
+
+  // add student to new group
+  groups.value.set(toGroup, [...newGroupStudents, movingStudent])
 }
 
 function toggleShowColors() {
@@ -154,31 +186,14 @@ function toggleShowColors() {
 
     <ScrollArea class="w-full flex flex-col h-auto pr-3">
       <div v-if="groups.size > 0" class="flex gap-6 w-full flex-wrap mb-8">
-        <div
-          class="flex p-3 border rounded-md w-full gap-3 flex-wrap flex-1 min-w-72 max-w-full flex-grow"
-          :class="`${getChar(group[0])[2]}`"
+        <DroppableGroup
           v-for="group in [...groups]"
+          :group-id="group[0]"
           v-bind:key="group[0]"
-        >
-          <div
-            class="flex bg-primary text-primary-foreground w-8 h-8 rounded-full justify-center items-center self-center"
-            :class="`${getChar(group[0])[1]}`"
-          >
-            {{ getChar(group[0])[0] }}
-          </div>
-          <div
-            v-for="student in group[1]"
-            v-bind:key="student.id"
-            class="flex py-1.5 px-2.5 border rounded-md h-fit"
-            :class="{
-              'border-red-700': student.level === 3 && showColors,
-              'border-orange-500': student.level === 2 && showColors,
-              'border-yellow-300': student.level === 1 && showColors
-            }"
-          >
-            {{ student.name }}
-          </div>
-        </div>
+          :show-colors="showColors"
+          :students="group[1]"
+          @moveStudent="moveStudent"
+        />
       </div>
 
       <div v-else class="flex gap-3 w-full flex-wrap mb-10">
