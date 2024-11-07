@@ -24,7 +24,7 @@ const emit = defineEmits<{
 
 const { hiddenStudents, hide, show } = useHiddenStudentsStore()
 
-const HOST = 'http://localhost:3000'
+const HOST = import.meta.env.VITE_SERVER_URL
 const PATH = '/api/students'
 const URL = HOST + PATH
 const fetchOptions = {

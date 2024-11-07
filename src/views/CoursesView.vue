@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useFetch } from '@vueuse/core'
 import { z } from 'zod'
-import { Button } from '@/components/ui/button'
-import { ArrowRightIcon, BookPlus, X } from 'lucide-vue-next'
+import { ArrowRightIcon } from 'lucide-vue-next'
 import CourseInput from '@/components/CourseInput.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-const HOST = 'http://localhost:3000'
+const HOST = import.meta.env.VITE_SERVER_URL
 const PATH = '/api/courses'
 const URL = HOST + PATH
 
@@ -16,14 +15,17 @@ const postOptions = {
   immediate: false
 }
 const newCourse = ref<z.infer<typeof CourseSchema>>()
+const courses = ref<z.infer<typeof CourseArraySchema>>([])
 
-const { isFetching, error, data } = useFetch(URL).json()
-
+const { isFetching, error, onFetchResponse } = useFetch(URL).json()
 const {
-  execute: fetchPost,
-  isFetching: isFetchingPost,
-  data: dataPost
+  execute: executePost,
+  isFetching: isPosting,
+  onFetchResponse: onPostResponse
 } = useFetch(URL, postOptions).post(newCourse).json()
+
+onFetchResponse(async (res) => verifyFetchResponse(await res.json()))
+onPostResponse(async (res) => verifyPostResponse(await res.json()))
 
 const CourseSchema = z.object({
   id: z.number(),
@@ -31,25 +33,30 @@ const CourseSchema = z.object({
 })
 const CourseArraySchema = z.array(CourseSchema)
 
-const courses = computed(() => {
-  if (dataPost.value) return verifyData(dataPost.value)
-  else return verifyData(data.value)
-})
-
-const editMode = ref(false)
-
-function verifyData(data: unknown): z.infer<typeof CourseArraySchema> | undefined {
-  return CourseArraySchema.safeParse(data).data
+function verifyFetchResponse(data: Promise<any>) {
+  const result = CourseArraySchema.safeParse(data)
+  if (!result.success) {
+    // handle error then return
+    result.error
+  } else {
+    courses.value = result.data
+  }
 }
 
-function toggleEditMode() {
-  editMode.value = !editMode.value
+function verifyPostResponse(data: unknown) {
+  const result = CourseSchema.safeParse(data)
+  if (!result.success) {
+    // handle error then return
+    result.error
+  } else {
+    courses.value = [...courses.value, result.data]
+  }
 }
 
 async function addCourse(name: string) {
   newCourse.value = { name, id: getRandomInt() }
 
-  await fetchPost(true)
+  await executePost(true)
 }
 
 function getRandomInt() {
@@ -81,7 +88,7 @@ function getRandomInt() {
 
     <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
       <div class="bg-background rounded-md">
-        <CourseInput @addCourse="addCourse" :isLoading="isFetchingPost" />
+        <CourseInput @addCourse="addCourse" :isLoading="isPosting" />
       </div>
     </div>
   </main>

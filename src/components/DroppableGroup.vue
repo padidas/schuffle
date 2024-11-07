@@ -33,7 +33,7 @@ function onDrop(event: DragEvent, groupId: number) {
   const draggedStudentId = event.dataTransfer?.getData('studentId')
   const fromGroup = event.dataTransfer?.getData('fromGroup')
 
-  console.log(`hello i am dropping ${draggedStudentId} `)
+  console.log(`hello i am dropping ${draggedStudentId}`)
 
   if (draggedStudentId === undefined) {
     toast.error('DnD-Fehler')

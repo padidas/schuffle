@@ -3,7 +3,7 @@ import { useFetch } from '@vueuse/core'
 import { ref } from 'vue'
 import type { z } from 'zod'
 
-const HOST = 'http://localhost:3000'
+const HOST = import.meta.env.VITE_SERVER_URL
 const PATH = '/api/students'
 
 const postOptions = {
