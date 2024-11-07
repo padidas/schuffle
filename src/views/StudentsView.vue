@@ -26,7 +26,6 @@ async function addStudent(name: string, level: number) {
   const newStudent = {
     name,
     level,
-    id: getRandomInt(),
     courseId: +courseId
   }
   await executeWithPayload(newStudent)
@@ -36,12 +35,6 @@ async function addStudent(name: string, level: number) {
 
 function toggleEditMode() {
   editMode.value = !editMode.value
-}
-
-function getRandomInt() {
-  const minCeiled = Math.ceil(100000)
-  const maxFloored = Math.floor(999999)
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled) // The maximum is exclusive and the minimum is inclusive
 }
 </script>
 

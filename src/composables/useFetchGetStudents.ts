@@ -7,7 +7,7 @@ const HOST = import.meta.env.VITE_SERVER_URL
 const PATH = '/api/students'
 
 export function useFetchGetStudents(courseId: string | string[]) {
-  const params = `?course=${courseId}`
+  const params = `?courseId=${courseId}`
   const URL = HOST + PATH + params
 
   const res = useFetch(URL).json()
@@ -18,7 +18,7 @@ export function useFetchGetStudents(courseId: string | string[]) {
 }
 
 function verifyData(data: unknown): z.infer<typeof StudentArraySchema> | undefined {
-  const parsed = StudentArraySchema.safeParse(data)
-  console.log('success', parsed.success)
-  return parsed.data
+  const result = StudentArraySchema.safeParse(data)
+  console.log('success', result.success)
+  return result.data
 }
