@@ -7,7 +7,7 @@ import CourseInput from '@/components/CourseInput.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-const HOST = import.meta.env.VITE_SERVER_URL
+const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/courses'
 const URL = HOST + PATH
 

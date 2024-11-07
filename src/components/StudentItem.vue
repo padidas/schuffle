@@ -24,8 +24,8 @@ const emit = defineEmits<{
 
 const { hiddenStudents, hide, show } = useHiddenStudentsStore()
 
-const HOST = import.meta.env.VITE_SERVER_URL
-const PATH = '/api/students'
+const HOST = import.meta.env.VITE_API_HOST
+const PATH = `/api/students/${props.student.id}`
 const URL = HOST + PATH
 const fetchOptions = {
   immediate: false
@@ -36,7 +36,7 @@ const {
   isFetching: isFetchingDelete,
   isFinished,
   error: errorDelete
-} = useFetch(URL + `/${props.student.id}`, fetchOptions).delete()
+} = useFetch(URL, fetchOptions).delete()
 
 const studentUpdate = ref<Partial<z.infer<typeof StudentSchema>>>()
 
@@ -44,9 +44,7 @@ const {
   execute: executePut,
   isFetching: isFetchingPut,
   error: errorPut
-} = useFetch(URL + `?id=${props.student.id}`, fetchOptions)
-  .put(studentUpdate)
-  .json()
+} = useFetch(URL, fetchOptions).put(studentUpdate).json()
 
 async function handleDelete() {
   await executeDelete()

@@ -3,7 +3,7 @@ import { useFetch } from '@vueuse/core'
 import { computed } from 'vue'
 import type { z } from 'zod'
 
-const HOST = import.meta.env.VITE_SERVER_URL
+const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/students'
 
 export function useFetchGetStudents(courseId: string | string[]) {
