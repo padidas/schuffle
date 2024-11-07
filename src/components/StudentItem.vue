@@ -36,7 +36,7 @@ const {
   isFetching: isFetchingDelete,
   isFinished,
   error: errorDelete
-} = useFetch(URL + `?id=${props.student.id}`, fetchOptions).delete()
+} = useFetch(URL + `/${props.student.id}`, fetchOptions).delete()
 
 const studentUpdate = ref<Partial<z.infer<typeof StudentSchema>>>()
 

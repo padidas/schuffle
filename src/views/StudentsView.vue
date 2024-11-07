@@ -26,7 +26,7 @@ async function addStudent(name: string, level: number) {
   const newStudent = {
     name,
     level,
-    courseId: +courseId
+    courseId: +courseId // TODO: validate
   }
   await executeWithPayload(newStudent)
   if (!postError.value) toast.success(`${newStudent.name} wurde hinzugefügt.`)
