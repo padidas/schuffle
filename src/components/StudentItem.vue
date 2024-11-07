@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { StudentSchema } from '@/types/schemas'
+import type { StudentUpdateSchema, StudentSchema } from '@/types/schemas'
 import { z } from 'zod'
 import { Button } from './ui/button'
 import { Check, EyeIcon, EyeOffIcon, Loader, Trash } from 'lucide-vue-next'
@@ -13,8 +13,11 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/f
 import { Input } from '@/components/ui/input'
 import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
 
+type Student = z.infer<typeof StudentSchema>
+type StudentUpdate = z.infer<typeof StudentUpdateSchema>
+
 const props = defineProps<{
-  student: z.infer<typeof StudentSchema>
+  student: Student
   editMode: boolean
 }>()
 
@@ -38,13 +41,13 @@ const {
   error: errorDelete
 } = useFetch(URL, fetchOptions).delete()
 
-const studentUpdate = ref<Partial<z.infer<typeof StudentSchema>>>()
+const studentUpdate = ref<StudentUpdate>()
 
 const {
-  execute: executePut,
-  isFetching: isFetchingPut,
-  error: errorPut
-} = useFetch(URL, fetchOptions).put(studentUpdate).json()
+  execute: executePatch,
+  isFetching: isPatching,
+  error: patchError
+} = useFetch(URL, fetchOptions).patch(studentUpdate).json()
 
 async function handleDelete() {
   await executeDelete()
@@ -64,8 +67,8 @@ async function handleLevelChange(level: string) {
   }
 
   studentUpdate.value = { level: newLevel }
-  await executePut()
-  if (errorPut.value) toast.error(JSON.stringify(errorPut.value))
+  await executePatch()
+  if (patchError.value) toast.error(JSON.stringify(patchError.value))
   else toast.success(`Level von ${props.student.name} wurde auf ${newLevel} geändert.`)
   emit('fetchStudents')
 }
@@ -89,8 +92,8 @@ const onSubmit = handleSubmit(async (values) => {
   const oldName = props.student.name
 
   studentUpdate.value = { name: values.name }
-  await executePut()
-  if (errorPut.value) toast.error(JSON.stringify(errorPut.value))
+  await executePatch()
+  if (patchError.value) toast.error(JSON.stringify(patchError.value))
   else toast.success(`Name wurde geändert: ${oldName} → ${values.name}`)
   emit('fetchStudents')
 })
@@ -127,7 +130,7 @@ function getZodErrorMessage(error: z.ZodError): string {
             </FormItem>
           </FormField>
           <Button type="submit" size="icon">
-            <Loader v-if="isFetchingPut" />
+            <Loader v-if="isPatching" />
             <Check v-else />
           </Button>
         </form>
