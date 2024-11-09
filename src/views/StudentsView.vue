@@ -18,6 +18,10 @@ const courseName = route.query['name']
 const { execute, isFetching, students } = useFetchGetStudents(courseId)
 const { isFetching: isFetchingPost, executeWithPayload, error: postError } = useFetchPostStudents()
 
+const sortedStudents = computed(() =>
+  [...(students.value ?? [])]?.sort((a, b) => a.name.localeCompare(b.name))
+)
+
 const editMode = ref(false)
 const addMode = ref(false)
 const isInitiallyFetching = computed(() => isFetching && students.value === undefined)
@@ -50,10 +54,7 @@ function toggleEditMode() {
       </div>
 
       <div class="flex flex-col gap-2 mb-14">
-        <template
-          v-for="student in [...(students ?? [])]?.sort((a, b) => a.name.localeCompare(b.name))"
-          v-bind:key="student.id"
-        >
+        <template v-for="student in sortedStudents" v-bind:key="student.id">
           <StudentItem :edit-mode="editMode" :student="student" @fetch-students="execute" />
         </template>
         <template v-if="isInitiallyFetching">

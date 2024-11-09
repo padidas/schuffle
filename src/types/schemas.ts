@@ -16,3 +16,10 @@ export const StudentUpdateSchema = StudentInsertSchema.omit({ courseId: true }).
 
 export type Student = z.infer<typeof StudentSchema>
 export type StudentArray = z.infer<typeof StudentArraySchema>
+
+export const CourseSchema = z.object({
+  id: z.number(),
+  name: z.string()
+})
+export const CourseArraySchema = z.array(CourseSchema)
+export const CourseInsertSchema = CourseSchema.omit({ id: true })

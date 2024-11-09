@@ -2,10 +2,13 @@
 import { ref } from 'vue'
 import { useFetch } from '@vueuse/core'
 import { z } from 'zod'
-import { ArrowRightIcon } from 'lucide-vue-next'
+import { EditIcon, XIcon } from 'lucide-vue-next'
 import CourseInput from '@/components/CourseInput.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/button'
+import { CourseArraySchema, CourseInsertSchema, CourseSchema } from '@/types/schemas'
+import CourseItem from '@/components/CourseItem.vue'
 
 const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/courses'
@@ -14,10 +17,10 @@ const URL = HOST + PATH
 const postOptions = {
   immediate: false
 }
-const newCourse = ref<z.infer<typeof CourseSchema>>()
+const newCourse = ref<z.infer<typeof CourseInsertSchema>>()
 const courses = ref<z.infer<typeof CourseArraySchema>>([])
 
-const { isFetching, error, onFetchResponse } = useFetch(URL).json()
+const { execute: executeFetch, isFetching, error, onFetchResponse } = useFetch(URL).json()
 const {
   execute: executePost,
   isFetching: isPosting,
@@ -26,12 +29,6 @@ const {
 
 onFetchResponse(async (res) => verifyFetchResponse(await res.json()))
 onPostResponse(async (res) => verifyPostResponse(await res.json()))
-
-const CourseSchema = z.object({
-  id: z.number(),
-  name: z.string()
-})
-const CourseArraySchema = z.array(CourseSchema)
 
 function verifyFetchResponse(data: Promise<any>) {
   const result = CourseArraySchema.safeParse(data)
@@ -54,32 +51,30 @@ function verifyPostResponse(data: unknown) {
 }
 
 async function addCourse(name: string) {
-  newCourse.value = { name, id: getRandomInt() }
+  newCourse.value = { name }
 
   await executePost(true)
 }
 
-function getRandomInt() {
-  const minCeiled = Math.ceil(100000)
-  const maxFloored = Math.floor(999999)
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled) // The maximum is exclusive and the minimum is inclusive
+const editMode = ref(false)
+function toggleEditMode() {
+  editMode.value = !editMode.value
+  if (!editMode.value) executeFetch()
 }
 </script>
 
 <template>
   <main class="flex flex-col overflow-hidden flex-1 relative items-center">
-    <ScrollArea class="w-full flex h-auto pr-3">
+    <div class="flex w-full justify-end items-center mb-3">
+      <Button size="sm" variant="ghost" @click="toggleEditMode">
+        <template v-if="editMode"> <XIcon class="w-4 h-4 mr-2" />Beenden </template>
+        <template v-else><EditIcon class="w-4 h-4 mr-2" />Bearbeiten </template>
+      </Button>
+    </div>
+    <ScrollArea class="w-full flex h-auto pr-3 pb-12">
       <div class="flex flex-col gap-2">
-        <RouterLink
-          v-for="course in courses"
-          :to="`/${course.id}?name=${course.name}`"
-          v-bind:key="course.id"
-          class="flex items-center justify-between space-x-4 rounded-md border p-3"
-          >{{ course.name }}
-          <div class="w-16 -my-1 h-8 flex items-center justify-center bg-primary rounded">
-            <ArrowRightIcon class="text-secondary" /></div
-        ></RouterLink>
-        <template v-if="isFetching">
+        <CourseItem v-for="course of courses" :course="course" :key="course.id" :editMode />
+        <template v-if="isFetching && courses.length === 0">
           <Skeleton v-for="n in 3" :key="n" class="w-full h-12" />
         </template>
       </div>
