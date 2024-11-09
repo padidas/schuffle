@@ -6,9 +6,7 @@ import type { z } from 'zod'
 const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/students'
 
-const postOptions = {
-  immediate: false
-}
+const postOptions = { immediate: false }
 
 type StudentInsert = z.infer<typeof StudentInsertSchema>
 

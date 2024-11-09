@@ -14,9 +14,7 @@ const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/courses'
 const URL = HOST + PATH
 
-const postOptions = {
-  immediate: false
-}
+const postOptions = { immediate: false }
 const newCourse = ref<z.infer<typeof CourseInsertSchema>>()
 const courses = ref<z.infer<typeof CourseArraySchema>>([])
 
