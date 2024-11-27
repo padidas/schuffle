@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AddStudentDialog from '@/components/AddStudentDialog.vue'
+import MainNav from '@/components/MainNav.vue'
 import StudentItem from '@/components/StudentItem.vue'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -43,13 +44,14 @@ function toggleEditMode() {
 </script>
 
 <template>
+  <MainNav />
   <main class="flex flex-col overflow-hidden flex-1 relative items-center">
     <ScrollArea class="w-full flex h-auto pr-3">
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-lg font-semibold">Schülis</h3>
         <Button size="sm" variant="ghost" @click="toggleEditMode">
           <template v-if="editMode"> <XIcon class="w-4 h-4 mr-2" />Beenden </template>
-          <template v-else><EditIcon class="w-4 h-4 mr-2" />Bearbeiten </template>
+          <template v-else> <EditIcon class="w-4 h-4 mr-2" />Bearbeiten </template>
         </Button>
       </div>
 
@@ -69,8 +71,8 @@ function toggleEditMode() {
       </div>
       <RouterLink :to="`/${courseId}/shuffle/?name=${courseName}`">
         <div class="bg-background rounded-md">
-          <Button :variant="editMode || addMode ? 'secondary' : 'default'"
-            ><Dices class="w-4 h-4 mr-2" /> Gruppen erstellen
+          <Button :variant="editMode || addMode ? 'secondary' : 'default'">
+            <Dices class="w-4 h-4 mr-2" /> Gruppen erstellen
           </Button>
         </div>
       </RouterLink>

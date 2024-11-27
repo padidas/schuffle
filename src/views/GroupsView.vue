@@ -12,6 +12,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import DroppableGroup from '@/components/DroppableGroup.vue'
 import { toast } from 'vue-sonner'
+import MainNav from '@/components/MainNav.vue'
 
 const route = useRoute()
 const courseId = route.params.id
@@ -163,6 +164,7 @@ function toggleShowColors() {
 </script>
 
 <template>
+  <MainNav />
   <main class="flex flex-col overflow-hidden flex-1 relative items-center">
     <div class="flex justify-between w-full px-2 items-center mt-2 mb-6 h-12">
       <div class="flex flex-col gap-2">
@@ -217,17 +219,17 @@ function toggleShowColors() {
     <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
       <div class="bg-background rounded-md">
         <Button variant="secondary" @click="toggleShowColors">
-          <template v-if="showColors"
-            ><DropletIcon class="w-4 h-4 mr-2" /> Farben verstecken</template
-          >
-          <template v-else><DropletIcon class="w-4 h-4 mr-2" /> Farben zeigen</template>
+          <template v-if="showColors">
+            <DropletIcon class="w-4 h-4 mr-2" /> Farben verstecken
+          </template>
+          <template v-else> <DropletIcon class="w-4 h-4 mr-2" /> Farben zeigen </template>
         </Button>
       </div>
       <div class="bg-background rounded-md">
-        <Button v-if="groups.size > 0" variant="secondary" @click="reset"
-          ><Dices class="w-4 h-4 mr-2" /> Zurücksetzen
+        <Button v-if="groups.size > 0" variant="secondary" @click="reset">
+          <Dices class="w-4 h-4 mr-2" /> Zurücksetzen
         </Button>
-        <Button v-else @click="shuffle"><Dices class="w-4 h-4 mr-2" /> Gruppen erstellen </Button>
+        <Button v-else @click="shuffle"> <Dices class="w-4 h-4 mr-2" /> Gruppen erstellen </Button>
       </div>
     </div>
   </main>

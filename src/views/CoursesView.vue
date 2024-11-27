@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useFetch } from '@vueuse/core'
+import { useFetch, type UseFetchOptions } from '@vueuse/core'
 import { z } from 'zod'
 import { EditIcon, XIcon } from 'lucide-vue-next'
 import CourseInput from '@/components/CourseInput.vue'
@@ -9,21 +9,34 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { CourseArraySchema, CourseInsertSchema, CourseSchema } from '@/types/schemas'
 import CourseItem from '@/components/CourseItem.vue'
+import MainNav from '@/components/MainNav.vue'
+import { useAuthTokenStore } from '@/stores/authToken'
+
+const { authToken, userName } = useAuthTokenStore()
 
 const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/courses'
 const URL = HOST + PATH
 
-const postOptions = { immediate: false }
+const options: RequestInit = {
+  headers: {
+    Authorization: `Bearer ${authToken ?? ''}`
+  }
+}
+
+const postOptions: UseFetchOptions = {
+  immediate: false
+}
+
 const newCourse = ref<z.infer<typeof CourseInsertSchema>>()
 const courses = ref<z.infer<typeof CourseArraySchema>>([])
 
-const { execute: executeFetch, isFetching, error, onFetchResponse } = useFetch(URL).json()
+const { execute: executeFetch, isFetching, error, onFetchResponse } = useFetch(URL, options).json()
 const {
   execute: executePost,
   isFetching: isPosting,
   onFetchResponse: onPostResponse
-} = useFetch(URL, postOptions).post(newCourse).json()
+} = useFetch(URL, options, postOptions).post(newCourse).json()
 
 onFetchResponse(async (res) => verifyFetchResponse(await res.json()))
 onPostResponse(async (res) => verifyPostResponse(await res.json()))
@@ -62,6 +75,8 @@ function toggleEditMode() {
 </script>
 
 <template>
+  <MainNav />
+  Hi, {{ userName }}!
   <main class="flex flex-col overflow-hidden flex-1 relative items-center">
     <div class="flex w-full justify-end items-center mb-3">
       <Button size="sm" variant="ghost" @click="toggleEditMode">

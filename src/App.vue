@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 import MainHeading from './components/MainHeading.vue'
 import { useColorMode } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
 import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
-import MainNav from './components/MainNav.vue'
 
 const mode = useColorMode()
 
@@ -19,6 +18,7 @@ function toggleMode() {
   <div class="container mx-auto flex flex-col py-4 h-screen max-w-3xl">
     <div class="flex justify-between mb-4">
       <MainHeading />
+      <RouterLink to="/login">Login</RouterLink>
       <Button @click="toggleMode" variant="ghost" size="sm">
         <Icon
           icon="radix-icons:moon"
@@ -31,7 +31,6 @@ function toggleMode() {
         <span class="sr-only">Toggle theme</span>
       </Button>
     </div>
-    <MainNav />
     <RouterView />
   </div>
   <Toaster />
