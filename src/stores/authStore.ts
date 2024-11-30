@@ -19,7 +19,7 @@ const refreshFetchOptions: UseFetchOptions = {
   immediate: false
 }
 
-export const useAuthStore = defineStore('authStore', () => {
+export const useAuthStore = defineStore('auth', () => {
   const authToken = ref<string>()
   const user = ref<User | undefined>(undefined)
   const refreshTokenTimeout = ref<ReturnType<typeof setTimeout>>()

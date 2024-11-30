@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Slider } from '@/components/ui/slider'
 import { useFetchGetStudents } from '@/composables/useFetchGetStudents'
 import { cn } from '@/lib/utils'
-import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
+import { studentsStore } from '@/stores/studentsStore'
 import type { Student } from '@/types/schemas'
 import { Dices, DropletIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
@@ -18,7 +18,7 @@ const route = useRoute()
 const courseId = route.params.id
 
 const { students } = useFetchGetStudents(courseId)
-const { hiddenStudents } = useHiddenStudentsStore()
+const { hiddenStudents } = studentsStore()
 const filteredStudents = computed(() =>
   students.value?.filter((student) => !hiddenStudents.includes(student.id))
 )

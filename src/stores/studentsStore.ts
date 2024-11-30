@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useHiddenStudentsStore = defineStore('hiddenStudents', () => {
+export const studentsStore = defineStore('hiddenStudents', () => {
   const hiddenStudents = ref<number[]>([])
 
   function hide(studentId: number) {

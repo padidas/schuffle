@@ -11,7 +11,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
+import { studentsStore } from '@/stores/studentsStore'
 import { useAuthStore } from '@/stores/authStore'
 
 type Student = z.infer<typeof StudentSchema>
@@ -26,7 +26,7 @@ const emit = defineEmits<{
   (e: 'fetchStudents'): void
 }>()
 
-const { hiddenStudents, hide, show } = useHiddenStudentsStore()
+const { hiddenStudents, hide, show } = studentsStore()
 
 const HOST = import.meta.env.VITE_API_HOST
 const PATH = `/api/students/${props.student.id}`
