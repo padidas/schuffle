@@ -5,6 +5,7 @@ import { ArrowRightIcon, CheckIcon, LoaderIcon, TrashIcon } from 'lucide-vue-nex
 import { Button } from './ui/button'
 import { toast } from 'vue-sonner'
 import { useFetch } from '@vueuse/core'
+import { useAuthTokenStore } from '@/stores/authToken'
 
 const { course } = defineProps<{
   course: z.infer<typeof CourseSchema>
@@ -18,12 +19,14 @@ const fetchOptions = {
   immediate: false
 }
 
+const { defaultFetchOptions } = useAuthTokenStore()
+
 const {
   execute: executeDelete,
   isFetching: isDeleting,
   isFinished,
   error: deleteError
-} = useFetch(URL, fetchOptions).delete()
+} = useFetch(URL, defaultFetchOptions, fetchOptions).delete()
 
 async function handleDelete() {
   await executeDelete()

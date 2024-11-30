@@ -1,3 +1,4 @@
+import { useAuthTokenStore } from '@/stores/authToken'
 import { StudentInsertSchema } from '@/types/schemas'
 import { useFetch } from '@vueuse/core'
 import { ref } from 'vue'
@@ -14,7 +15,9 @@ export function useFetchPostStudents() {
   const URL = HOST + PATH
   const student = ref<StudentInsert | undefined>(undefined)
 
-  const res = useFetch(URL, postOptions).post(student).json()
+  const { defaultFetchOptions } = useAuthTokenStore()
+
+  const res = useFetch(URL, defaultFetchOptions, postOptions).post(student).json()
 
   async function executeWithPayload(newStudent: StudentInsert | undefined) {
     student.value = newStudent

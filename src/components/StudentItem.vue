@@ -12,6 +12,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
+import { useAuthTokenStore } from '@/stores/authToken'
 
 type Student = z.infer<typeof StudentSchema>
 type StudentUpdate = z.infer<typeof StudentUpdateSchema>
@@ -34,12 +35,14 @@ const fetchOptions = {
   immediate: false
 }
 
+const { defaultFetchOptions } = useAuthTokenStore()
+
 const {
   execute: executeDelete,
   isFetching: isFetchingDelete,
   isFinished,
   error: errorDelete
-} = useFetch(URL, fetchOptions).delete()
+} = useFetch(URL, defaultFetchOptions, fetchOptions).delete()
 
 const studentUpdate = ref<StudentUpdate>()
 
@@ -47,7 +50,7 @@ const {
   execute: executePatch,
   isFetching: isPatching,
   error: patchError
-} = useFetch(URL, fetchOptions).patch(studentUpdate).json()
+} = useFetch(URL, defaultFetchOptions, fetchOptions).patch(studentUpdate).json()
 
 async function handleDelete() {
   await executeDelete()

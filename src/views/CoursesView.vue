@@ -12,17 +12,11 @@ import CourseItem from '@/components/CourseItem.vue'
 import MainNav from '@/components/MainNav.vue'
 import { useAuthTokenStore } from '@/stores/authToken'
 
-const { authToken, userName } = useAuthTokenStore()
+const { defaultFetchOptions, userName } = useAuthTokenStore()
 
 const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/courses'
 const URL = HOST + PATH
-
-const options: RequestInit = {
-  headers: {
-    Authorization: `Bearer ${authToken ?? ''}`
-  }
-}
 
 const postOptions: UseFetchOptions = {
   immediate: false
@@ -31,12 +25,18 @@ const postOptions: UseFetchOptions = {
 const newCourse = ref<z.infer<typeof CourseInsertSchema>>()
 const courses = ref<z.infer<typeof CourseArraySchema>>([])
 
-const { execute: executeFetch, isFetching, error, onFetchResponse } = useFetch(URL, options).json()
+const {
+  execute: executeFetch,
+  isFetching,
+  error,
+  onFetchResponse
+} = useFetch(URL, defaultFetchOptions).json()
+
 const {
   execute: executePost,
   isFetching: isPosting,
   onFetchResponse: onPostResponse
-} = useFetch(URL, options, postOptions).post(newCourse).json()
+} = useFetch(URL, defaultFetchOptions, postOptions).post(newCourse).json()
 
 onFetchResponse(async (res) => verifyFetchResponse(await res.json()))
 onPostResponse(async (res) => verifyPostResponse(await res.json()))

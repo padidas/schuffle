@@ -18,13 +18,7 @@ const PATH = `/auth/login`
 const URL = HOST + PATH
 
 const router = useRouter()
-const { setAuthToken, login, userName } = useAuthTokenStore()
-
-const options: RequestInit = {
-  headers: {
-    Authorization: 'Bearer my-super-token-yo'
-  }
-}
+const { setAuthToken, login, userName, defaultFetchOptions } = useAuthTokenStore()
 
 const fetchOptions: UseFetchOptions = {
   immediate: false
@@ -38,7 +32,7 @@ const {
   error: postError,
   onFetchResponse: onPostResponse,
   data: postResponse
-} = useFetch(URL, options, fetchOptions).post(loginPayload).json()
+} = useFetch(URL, defaultFetchOptions, fetchOptions).post(loginPayload).json()
 
 onPostResponse(() => {
   const accessToken = postResponse.value.accessToken

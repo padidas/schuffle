@@ -11,11 +11,11 @@ const HOST = import.meta.env.VITE_API_HOST
 const PATH = `/auth/refresh`
 const URL = HOST + PATH
 
-const options: RequestInit = {
+const refreshRequestInit: RequestInit = {
   credentials: "include"
 }
 
-const fetchOptions: UseFetchOptions = {
+const refreshFetchOptions: UseFetchOptions = {
   immediate: false
 }
 
@@ -35,6 +35,13 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     // set a timeout to refresh the token a minute before it expires
     return jwtPayload.sub
   })
+  const defaultFetchOptions = computed<RequestInit>(() => (
+    {
+      headers: {
+        Authorization: `Bearer ${authToken.value ?? ''}`
+      }
+    }
+  ))
 
   const {
     execute: executeRefresh,
@@ -42,7 +49,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     error: postError,
     onFetchResponse: onPostResponse,
     data: postResponse
-  } = useFetch(URL, options, fetchOptions).post().json()
+  } = useFetch(URL, refreshRequestInit, refreshFetchOptions).post().json()
 
   onPostResponse(() => {
     user.value = postResponse.value
@@ -77,6 +84,6 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     refreshTokenTimeout.value = setTimeout(executeRefresh, timeout);
   }
 
-  return { authToken, user, login, setAuthToken, refreshTokenTimeout, userName, executeRefresh }
+  return { authToken, user, login, setAuthToken, refreshTokenTimeout, userName, executeRefresh, defaultFetchOptions }
 })
 
