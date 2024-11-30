@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button'
 import { CourseArraySchema, CourseInsertSchema, CourseSchema } from '@/types/schemas'
 import CourseItem from '@/components/CourseItem.vue'
 import MainNav from '@/components/MainNav.vue'
-import { useAuthTokenStore } from '@/stores/authToken'
+import { useAuthStore } from '@/stores/authStore'
 
-const { defaultFetchOptions, userName } = useAuthTokenStore()
+const { defaultFetchOptions, userName } = useAuthStore()
 
 const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/courses'

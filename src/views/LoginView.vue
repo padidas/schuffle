@@ -10,7 +10,7 @@ import { LogInIcon } from 'lucide-vue-next'
 import { useFetch, type UseFetchOptions } from '@vueuse/core'
 import { ref } from 'vue'
 import type { User } from '@/types/schemas'
-import { useAuthTokenStore } from '@/stores/authToken'
+import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 
 const HOST = import.meta.env.VITE_API_HOST
@@ -18,7 +18,7 @@ const PATH = `/auth/login`
 const URL = HOST + PATH
 
 const router = useRouter()
-const { setAuthToken, login, userName, defaultFetchOptions } = useAuthTokenStore()
+const { setAuthToken, login, userName, defaultFetchOptions } = useAuthStore()
 
 const fetchOptions: UseFetchOptions = {
   immediate: false

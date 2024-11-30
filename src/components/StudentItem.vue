@@ -12,7 +12,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useHiddenStudentsStore } from '@/stores/hiddenStudents'
-import { useAuthTokenStore } from '@/stores/authToken'
+import { useAuthStore } from '@/stores/authStore'
 
 type Student = z.infer<typeof StudentSchema>
 type StudentUpdate = z.infer<typeof StudentUpdateSchema>
@@ -35,7 +35,7 @@ const fetchOptions = {
   immediate: false
 }
 
-const { defaultFetchOptions } = useAuthTokenStore()
+const { defaultFetchOptions } = useAuthStore()
 
 const {
   execute: executeDelete,

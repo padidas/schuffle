@@ -1,4 +1,4 @@
-import { useAuthTokenStore } from '@/stores/authToken'
+import { useAuthStore } from '@/stores/authStore'
 import { StudentInsertSchema } from '@/types/schemas'
 import { useFetch } from '@vueuse/core'
 import { ref } from 'vue'
@@ -15,7 +15,7 @@ export function useFetchPostStudents() {
   const URL = HOST + PATH
   const student = ref<StudentInsert | undefined>(undefined)
 
-  const { defaultFetchOptions } = useAuthTokenStore()
+  const { defaultFetchOptions } = useAuthStore()
 
   const res = useFetch(URL, defaultFetchOptions, postOptions).post(student).json()
 

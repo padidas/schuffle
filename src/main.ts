@@ -5,7 +5,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import { useAuthTokenStore } from './stores/authToken'
+import { useAuthStore } from './stores/authStore'
 
 startApp();
 
@@ -18,7 +18,7 @@ async function startApp() {
 
   // attempt to auto refresh token before startup
   try {
-    const { executeRefresh } = useAuthTokenStore();
+    const { executeRefresh } = useAuthStore();
     await executeRefresh();
   } catch {
     // catch error to start app on success or failure

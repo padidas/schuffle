@@ -1,4 +1,4 @@
-import { useAuthTokenStore } from '@/stores/authToken'
+import { useAuthStore } from '@/stores/authStore'
 import { StudentArraySchema } from '@/types/schemas'
 import { useFetch } from '@vueuse/core'
 import { computed } from 'vue'
@@ -11,7 +11,7 @@ export function useFetchGetStudents(courseId: string | string[]) {
   const params = `?courseId=${courseId}`
   const URL = HOST + PATH + params
 
-  const { defaultFetchOptions } = useAuthTokenStore()
+  const { defaultFetchOptions } = useAuthStore()
 
   const res = useFetch(URL, defaultFetchOptions).json()
 
