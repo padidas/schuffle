@@ -35,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
     // set a timeout to refresh the token a minute before it expires
     return jwtPayload.sub
   })
-  const defaultFetchOptions = computed<RequestInit>(() => (
+  const defaultRequestInit = computed<RequestInit>(() => (
     {
       headers: {
         Authorization: `Bearer ${authToken.value ?? ''}`
@@ -45,8 +45,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   const {
     execute: executeRefresh,
-    isFetching: isPosting,
-    error: postError,
     onFetchResponse: onPostResponse,
     data: postResponse
   } = useFetch(URL, refreshRequestInit, refreshFetchOptions).post().json()
@@ -61,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
     authToken.value = newToken
   }
 
-  function login(userPayload: any) {
+  function login(userPayload: User | undefined) {
     user.value = userPayload
     console.log("USER PAYLOAD", userPayload)
     console.log("USER.VALUE", user.value)
@@ -77,13 +75,14 @@ export const useAuthStore = defineStore('auth', () => {
 
     // set a timeout to refresh the token a minute before it expires
     const expires = new Date(jwtToken.exp * 1000);
-    const timeout = expires.getTime() - Date.now() - (60 * 1000);
+    const SEC_BEFORE_EXP = 30
+    const timeout = expires.getTime() - Date.now() - (1000 * SEC_BEFORE_EXP);
 
-    console.log(`Timer started. Expires: ${expires}. Timeout: ${timeout}`)
+    console.log(`Timer started. Expires: ${expires}. Timeout: ${timeout / 1000} sec`)
 
     refreshTokenTimeout.value = setTimeout(executeRefresh, timeout);
   }
 
-  return { authToken, user, login, setAuthToken, refreshTokenTimeout, userName, executeRefresh, defaultFetchOptions }
+  return { authToken, user, login, setAuthToken, refreshTokenTimeout, userName, executeRefresh, defaultRequestInit }
 })
 

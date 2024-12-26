@@ -56,7 +56,7 @@ function toggleEditMode() {
       </div>
 
       <div class="flex flex-col gap-2 mb-14">
-        <template v-for="student in sortedStudents" v-bind:key="student.id">
+        <template v-for="student in sortedStudents" :key="student.id">
           <StudentItem :edit-mode="editMode" :student="student" @fetch-students="execute" />
         </template>
         <template v-if="isInitiallyFetching">
@@ -67,7 +67,7 @@ function toggleEditMode() {
 
     <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
       <div class="bg-background rounded-md">
-        <AddStudentDialog @add-student="addStudent" :isLoading="isFetchingPost" />
+        <AddStudentDialog :is-loading="isFetchingPost" @add-student="addStudent" />
       </div>
       <RouterLink :to="`/${courseId}/shuffle/?name=${courseName}`">
         <div class="bg-background rounded-md">

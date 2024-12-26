@@ -18,7 +18,7 @@ const PATH = `/auth/login`
 const URL = HOST + PATH
 
 const router = useRouter()
-const { setAuthToken, login, userName, defaultFetchOptions } = useAuthStore()
+const { setAuthToken, login, userName, defaultRequestInit } = useAuthStore()
 
 const fetchOptions: UseFetchOptions = {
   immediate: false
@@ -28,11 +28,15 @@ const loginPayload = ref<User>()
 
 const {
   execute: executePost,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isFetching: isPosting,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   error: postError,
   onFetchResponse: onPostResponse,
   data: postResponse
-} = useFetch(URL, defaultFetchOptions, fetchOptions).post(loginPayload).json()
+} = useFetch(URL, { ...defaultRequestInit, credentials: 'include' }, fetchOptions)
+  .post(loginPayload)
+  .json()
 
 onPostResponse(() => {
   const accessToken = postResponse.value.accessToken
@@ -70,7 +74,7 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <form @submit="onSubmit" class="flex flex-col gap-4">
+  <form class="flex flex-col gap-4" @submit="onSubmit">
     <div class="flex flex-col gap-4 my-4">
       <FormField v-slot="{ componentField }" name="email">
         <FormItem class="flex flex-col flex-[2]">

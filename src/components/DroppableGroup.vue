@@ -45,9 +45,9 @@ function onDrop(event: DragEvent, groupId: number) {
 
 <template>
   <ul
+    ref="groupRef"
     class="flex p-3 border rounded-md w-full gap-3 flex-wrap flex-1 min-w-72 max-w-full flex-grow"
     :class="groupInfo[2]"
-    ref="groupRef"
     @drop="onDrop($event, groupId)"
     @dragenter.prevent
     @dragover.prevent
@@ -60,7 +60,7 @@ function onDrop(event: DragEvent, groupId: number) {
     </div>
     <li
       v-for="student in students"
-      v-bind:key="student.id"
+      :key="student.id"
       class="flex py-1.5 px-2.5 border rounded-md h-fit"
       :class="{
         'border-red-700': student.level === 3 && showColors,

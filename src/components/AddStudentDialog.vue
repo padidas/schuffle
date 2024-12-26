@@ -73,7 +73,7 @@ function getPlaceholder() {
       <DialogHeader>
         <DialogTitle>Hinzufügen</DialogTitle>
       </DialogHeader>
-      <form @submit="onSubmit" class="flex flex-col gap-4">
+      <form class="flex flex-col gap-4" @submit="onSubmit">
         <div class="flex flex-row gap-4 my-4">
           <FormField v-slot="{ componentField }" name="name">
             <FormItem class="flex flex-col flex-[2]">

@@ -35,14 +35,14 @@ const fetchOptions = {
   immediate: false
 }
 
-const { defaultFetchOptions } = useAuthStore()
+const { defaultRequestInit } = useAuthStore()
 
 const {
   execute: executeDelete,
   isFetching: isFetchingDelete,
   isFinished,
   error: errorDelete
-} = useFetch(URL, defaultFetchOptions, fetchOptions).delete()
+} = useFetch(URL, defaultRequestInit, fetchOptions).delete()
 
 const studentUpdate = ref<StudentUpdate>()
 
@@ -50,7 +50,7 @@ const {
   execute: executePatch,
   isFetching: isPatching,
   error: patchError
-} = useFetch(URL, defaultFetchOptions, fetchOptions).patch(studentUpdate).json()
+} = useFetch(URL, defaultRequestInit, fetchOptions).patch(studentUpdate).json()
 
 async function handleDelete() {
   await executeDelete()
@@ -117,7 +117,7 @@ function getZodErrorMessage(error: z.ZodError): string {
   >
     <Transition mode="out-in">
       <div v-if="editMode" class="flex justify-between w-full">
-        <form @submit="onSubmit" class="flex gap-3 items-center">
+        <form class="flex gap-3 items-center" @submit="onSubmit">
           <FormField v-slot="{ componentField }" name="name">
             <FormItem class="flex flex-col">
               <FormControl>
@@ -162,12 +162,12 @@ function getZodErrorMessage(error: z.ZodError): string {
         <div class="-my-2">
           <Button
             v-if="hiddenStudents.some((elem) => elem === student.id)"
-            @click="show(student.id)"
             variant="ghost"
             size="icon"
+            @click="show(student.id)"
             ><EyeOffIcon class="w-5"
           /></Button>
-          <Button v-else @click="hide(student.id)" variant="ghost" size="icon"
+          <Button v-else variant="ghost" size="icon" @click="hide(student.id)"
             ><EyeIcon class="w-5"
           /></Button>
         </div>

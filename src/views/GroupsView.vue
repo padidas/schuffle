@@ -74,9 +74,9 @@ function shuffle() {
   }
 
   // create groups of student levels
-  let ones = filteredStudents.value?.filter((stud) => stud.level === 1)
-  let twos = filteredStudents.value?.filter((stud) => stud.level === 2)
-  let threes = filteredStudents.value?.filter((stud) => stud.level === 3)
+  const ones = filteredStudents.value?.filter((stud) => stud.level === 1)
+  const twos = filteredStudents.value?.filter((stud) => stud.level === 2)
+  const threes = filteredStudents.value?.filter((stud) => stud.level === 3)
 
   if (ones === undefined || twos === undefined || threes === undefined) return
 
@@ -120,7 +120,7 @@ function shuffleStudentList(array: Student[]) {
   // While there remain elements to shuffle...
   while (currentIndex != 0) {
     // Pick a remaining element...
-    let randomIndex = Math.floor(Math.random() * currentIndex)
+    const randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex--
 
     // And swap it with the current element.
@@ -190,26 +190,26 @@ function toggleShowColors() {
       <div v-if="groups.size > 0" class="flex gap-6 w-full flex-wrap mb-8">
         <DroppableGroup
           v-for="group in [...groups]"
+          :key="group[0]"
           :group-id="group[0]"
-          v-bind:key="group[0]"
           :show-colors="showColors"
           :students="group[1]"
-          @moveStudent="moveStudent"
+          @move-student="moveStudent"
         />
       </div>
 
       <div v-else class="flex gap-3 w-full flex-wrap mb-10">
         <div
+          v-for="student in [...(filteredStudents ?? [])].sort((a, b) =>
+            a.name.localeCompare(b.name)
+          )"
+          :key="student.id"
           class="flex py-1.5 px-2.5 border rounded-md h-fit"
           :class="{
             'border-red-700': student.level === 3 && showColors,
             'border-orange-500': student.level === 2 && showColors,
             'border-yellow-300': student.level === 1 && showColors
           }"
-          v-for="student in [...(filteredStudents ?? [])].sort((a, b) =>
-            a.name.localeCompare(b.name)
-          )"
-          v-bind:key="student.id"
         >
           {{ student.name }}
         </div>

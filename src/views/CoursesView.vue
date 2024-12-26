@@ -12,7 +12,7 @@ import CourseItem from '@/components/CourseItem.vue'
 import MainNav from '@/components/MainNav.vue'
 import { useAuthStore } from '@/stores/authStore'
 
-const { defaultFetchOptions, userName } = useAuthStore()
+const { defaultRequestInit, userName } = useAuthStore()
 
 const HOST = import.meta.env.VITE_API_HOST
 const PATH = '/api/courses'
@@ -30,22 +30,22 @@ const {
   isFetching,
   error,
   onFetchResponse
-} = useFetch(URL, defaultFetchOptions).json()
+} = useFetch(URL, defaultRequestInit).json()
 
 const {
   execute: executePost,
   isFetching: isPosting,
   onFetchResponse: onPostResponse
-} = useFetch(URL, defaultFetchOptions, postOptions).post(newCourse).json()
+} = useFetch(URL, defaultRequestInit, postOptions).post(newCourse).json()
 
 onFetchResponse(async (res) => verifyFetchResponse(await res.json()))
 onPostResponse(async (res) => verifyPostResponse(await res.json()))
 
-function verifyFetchResponse(data: Promise<any>) {
+function verifyFetchResponse(data: Promise<unknown>) {
   const result = CourseArraySchema.safeParse(data)
   if (!result.success) {
     // handle error then return
-    result.error
+    console.log(result.error)
   } else {
     courses.value = result.data
   }
@@ -55,7 +55,7 @@ function verifyPostResponse(data: unknown) {
   const result = CourseSchema.safeParse(data)
   if (!result.success) {
     // handle error then return
-    result.error
+    console.log(result.error)
   } else {
     courses.value = [...courses.value, result.data]
   }
@@ -86,7 +86,7 @@ function toggleEditMode() {
     </div>
     <ScrollArea class="w-full flex h-auto pr-3 pb-12">
       <div class="flex flex-col gap-2">
-        <CourseItem v-for="course of courses" :course="course" :key="course.id" :editMode />
+        <CourseItem v-for="course of courses" :key="course.id" :course="course" :edit-mode />
         <template v-if="isFetching && courses.length === 0">
           <Skeleton v-for="n in 3" :key="n" class="w-full h-12" />
         </template>
@@ -96,7 +96,7 @@ function toggleEditMode() {
 
     <div class="flex justify-end items-center gap-3 absolute bottom-2 right-2">
       <div class="bg-background rounded-md">
-        <CourseInput @addCourse="addCourse" :isLoading="isPosting" />
+        <CourseInput :is-loading="isPosting" @add-course="addCourse" />
       </div>
     </div>
   </main>
